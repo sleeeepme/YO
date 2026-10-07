@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Avatar } from './avatar';
 import { Logo } from './logo';
 import { SocialIcon } from './socials';
+import { VoiceTest } from './voice-test';
 import { rooms, moodLabels, type Mood, type Room } from '@/lib/rooms';
 
 type Step = 'choose' | 'avatar' | 'access';
@@ -67,7 +68,8 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
     <header className="site-header"><Link href="/" aria-label="YO トップ"><Logo /></Link><span className="brand-tagline">今、話せる友達がいる。</span><nav aria-label="メインナビゲーション"><button onClick={() => document.getElementById('tables')?.scrollIntoView({ behavior: 'smooth' })}>テーブル</button><button onClick={() => showStep('avatar')}>アバター</button><button onClick={() => showModal('about')}>YOについて</button></nav><span className="preview-chip"><i />デザインプレビュー</span></header>
     <main id="main" tabIndex={-1}>
       <section className="intro"><div><p className="eyebrow">LINK. JOIN. TALK.</p><h1>今、話せる<span>友達がいる。</span></h1><p className="intro-copy">SNSのリンクから、いつもの友達と同じルームへ。<br />アバターで、気軽に。カスタマイズはあとから。</p></div><div className="social-path">{socials.map((name, i) => <div key={name}><SocialIcon name={name} /><span>{name}</span>{i < 3 ? <b aria-hidden="true">›</b> : null}</div>)}<span className="path-arrow" aria-hidden="true">→</span><Logo /></div></section>
-      <div className="preview-note"><span>◉ 公開プレビュー</span><p>サンプルのルームです。ログイン・実際の参加・音声通話は準備中です。</p></div>
+      <div className="preview-note"><span>◉ 公開プレビュー</span><p>下のカードはデザインのサンプルです。実際の通話は「招待ゲスト通話テスト」から参加します。</p></div>
+      <VoiceTest />
       <div className="experience-grid">
         <section className="invite-column" id="invitation"><div className="step-heading"><span>1</span><h2>リンクを開く</h2><small>ルームの雰囲気を、先に。</small></div>
           <div className="invite-phone"><div className="scene-cover"><div className="scene-shade" /><Logo /><div className="scene-spark" aria-hidden="true">✦</div></div><div className="invitation-details"><h3>{selected.title}<span aria-hidden="true">{selected.mood === 'drink' ? '🍺' : '✦'}</span></h3><div className="invite-avatar-row">{selected.names.slice(0, 3).map((name, i) => <div className="small-person" key={name}><Avatar seed={isSample ? i : seed} /></div>)}{selected.count > 3 ? <span className="more-people">+{selected.count - 3}</span> : null}</div><p className="occupancy">{selected.count}人で話しています <span>{selected.count} / {selected.capacity}{full ? ' FULL' : ''}</span></p><p className="remaining">{selected.minutes ? `あと${selected.minutes}分` : '制限時間は未設定'}<small>（プレビュー）</small></p><div className="friend-badge"><span>✓</span> Friends + Friends <small>友達とその友達</small></div><div className="named-people">{selected.names.slice(0, 3).map((name, i) => <div key={name}><span className="avatar-circle"><Avatar seed={isSample ? i : seed} /></span><span>{name}</span></div>)}{selected.count > 3 ? <div><span className="more-people">+{selected.count - 3}</span></div> : null}</div><button className="button primary" onClick={() => full ? showModal('create') : showStep('choose')}>{full ? '別テーブルを作る' : '参加方法の画面を見る'} ↗</button><button className="detail-link" onClick={() => showModal('about')}>詳細を見る</button></div></div>

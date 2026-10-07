@@ -42,3 +42,9 @@ Vercel のアクセス保護設定は変更していません。上記の公開�
 デザインの基準は DESIGN.md に保存。認証・実際の音声通話は引き続き未対応。
 
 前の公開版: a3af351e98e50c7a9f9876f23206090dca3b05d7 / dpl_HgppzgKk3Qf38SZczmFW85h5jQu7。
+
+## v0.3 通話テスト準備
+
+招待ゲスト用の通話UI・サーバーAPI・参加枠SQL・署名webhookを追加。Supabase / LiveKitの環境変数は未登録で、通話テストは無効。VOICE_SETUP.mdに有効化手順と外部検証条件を記載。
+
+型チェック・本番ビルド・3件の自動テスト成功。PGliteによるSQL検証は実Supabaseの複数接続による競合試験ではない。ローカルで未設定statusのready:false、作成・参加503、不正Origin403、不正な通話ID404を確認。実際の複数端末での音声は未検証。

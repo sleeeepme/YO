@@ -9,12 +9,13 @@ Modern / Pop な、親しみやすいキャラクター中心の UI を採用し
 
 ## 現在の状態
 
-2026-10-07 時点で Next.js の公開プレビュー v0.2 を実装しました。実装担当者は [AGENTS.md](AGENTS.md) も読んでください。
+2026-10-07 時点で v0.3 の招待ゲスト音声テストを実装しました。実装担当者は [AGENTS.md](AGENTS.md) も読んでください。
 
-実装済み：トップページ、テーブルの気分による絞り込み、公開サンプルの招待画面、サンプルリンクのコピー、2〜8人のローカルプレビュー作成、ランダムアバターと Shuffle、ブラウザ内のアバター保存、OGP、モバイル表示。
+トップ・デザインサンプル・アバター・OGPに加え、ホストコードでのテーブル作成、招待の検証、ゲストセッション、2〜8人の参加枠確保、LiveKit音声・ミュート・退出・ホスト終了のコードがあります。
 
-**未実装：ユーザー登録・ログイン、YOの友達判定、承認、共有ルームの永続化、実際の音声通話、SNS認証連携。**
-サンプルの人数・名前・時間は架空です。プレビュー作成は画面内だけで、他ユーザーが参加できるルームは作成しません。アバターはバージョン付きの localStorage のみへ保存します。マイク権限や個人情報を要求しません。
+**外部サービスの設定は未完了で、現在の公開サイトでは通話は無効です。実際の複数端末での音声テストは未実施です。** セットアップは [VOICE_SETUP.md](VOICE_SETUP.md)。サンプルの人数・名前・時間は架空です。デザインサンプルの「プレビューを作る」はローカル表示だけです。実際の通話と混同しないでください。
+
+未実装：Supabase Auth / SNSログイン、Friends + Friendsの関係判定、参加承認、ブロック、詳細なアバターカスタマイズ。今回の限定テストは、ホストから招待リンクを受け取ったゲストを許可する別モードです。通常版のFriends + Friends要件は変えていません。
 
 以下のプロダクト仕様は今後の実装基準です。公開プレビューの実装済み範囲と混同しないでください。
 
@@ -151,6 +152,7 @@ npm run dev
 
 ```bash
 npm run typecheck
+npm run test
 npm run build
 npm run start
 ```
@@ -163,6 +165,8 @@ npm run start
 | /invite/friday-drink | 6 / 8 人の招待サンプル |
 | /invite/chill-night | 3 / 6 人の招待サンプル |
 | /invite/one-more-game | 8 / 8 満員と別テーブル導線のサンプル |
+| /call/:id | 招待リンクからのゲスト音声テスト（設定後） |
+| /api/voice/status | 通話テストの接続準備状況 |
 | /api/health | 状態・バージョン・利用可能な機能（秘密値を含まない） |
 
 不明な招待IDは404になります。音声・認証が利用可能と誤認させるフォールバックはありません。
@@ -171,25 +175,28 @@ npm run start
 
 リポジトリ直下がアプリのルートです。Framework は Next.js、Node.js 24.x、Install は npm ci、Build は npm run build を使用します。
 Vercel の接続アカウントに公開します。GitHub 連携を設定した場合は main が本番ブランチです。
-認証・通話機能を追加するまでは .env.example の秘密キーは不要です。
+デザインプレビューだけなら秘密キーは不要です。通話テストの有効化には [VOICE_SETUP.md](VOICE_SETUP.md) の設定が必要です。
 配信先とデプロイ結果は [DEPLOYMENT.md](DEPLOYMENT.md) に記録します。
 
 ## 環境変数方針
 
-NEXT_PUBLIC_APP_URL のみ公開プレビューで使用します（任意）。他の変数は今後の認証・音声実装用の予約名として .env.example に空欄で記載しています。現行コードでは読み取りません。値は記載しません。
+デザインプレビューは NEXT_PUBLIC_APP_URL のみ任意で使用します。通話テストの必須変数は .env.example と [VOICE_SETUP.md](VOICE_SETUP.md) を参照してください。値は文書・Gitに記載しません。
 
 | 変数名 | 用途 | 公開可否 |
 | --- | --- | --- |
 | NEXT_PUBLIC_APP_URL | 招待・OGP・認証後の戻り先に使うアプリ URL | 公開可 |
 | NEXT_PUBLIC_SUPABASE_URL | Supabase の接続 URL | 公開可 |
-| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Supabase の公開用キー。RLS と併用 | 公開可 |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | 将来のSupabase Auth用。現在は未使用 | 公開可 |
 | SUPABASE_SERVICE_ROLE_KEY | 必要なサーバー管理操作だけに使用 | サーバー専用・秘密 |
 | LIVEKIT_URL | サーバーが使用する LiveKit 接続先。クライアントへ渡す場合も秘密として扱わない | 公開可能な接続先 |
 | LIVEKIT_API_KEY | LiveKit トークン署名に使う資格情報 | サーバー専用 |
 | LIVEKIT_API_SECRET | LiveKit トークン署名の秘密値 | サーバー専用・秘密 |
+| YO_VOICE_ENABLED | 通話テストを有効化。既定 false | サーバー設定 |
+| YO_SESSION_SECRET | ゲストCookie署名・招待ハッシュ。32文字以上 | サーバー専用・秘密 |
+| YO_TEST_HOST_CODE | テストホストだけに配る作成コード。16文字以上 | サーバー専用・秘密 |
 
 実装・既存プロジェクトが公開用の anon key を使う構成の場合は NEXT_PUBLIC_SUPABASE_ANON_KEY に揃えます。公開用キー名を混在させず、実装と環境変数例を一致させてください。
-サービスロールキーは RLS を迂回できるため、通常のユーザー操作には使わず、必要な場合もサーバーで認可を行います。
+サービスロールキーはRLSを迂回できるためブラウザに渡しません。限定テストはサーバー署名ゲストCookie・招待ハッシュ・ホストコードで認可した後に専用RPCだけを呼びます。Supabase Authへの移行時は通常ユーザー操作をJWT / RLSへ移します。
 
 SNS のクライアント ID / シークレット等は、実際に選んだ認証方式で必要なものだけを追加します。Supabase 側で管理する OAuth シークレットは、その設定先で保持し、不要にアプリへ複製しません。
 

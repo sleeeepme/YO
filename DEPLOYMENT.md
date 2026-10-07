@@ -5,8 +5,8 @@
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_DhwRDrLHpm2eiwWTdamDetpEA7ZU
-- 配信したアプリのコミット: c7c5fafdeed42720e30b140b88f923b7fc3c2b14
+- デプロイID: dpl_H7Hub9ingFZFj6gcDyLPJRst12fe
+- 配信したアプリのコミット: 36f2f0fefee90576097d23f09cf054bd5bba8aa8
 
 ## 利用できること
 
@@ -30,4 +30,6 @@
 
 GitHub mainの上記コミットを指定してVercel APIから配信。後続の文書だけのコミットでは配信コードは変わらない。
 Vercelのアクセス保護設定は変更していない。公開ドメインは認証情報なしで閲覧・API確認済み。環境変数の保存後は新しいデプロイが必要。
+
+2026-10-08：新しい添付写真に合わせてOを非対称な輪郭へ調整。独立した透明背景SVGを /yo-logo.svg（黒）と /yo-logo-white.svg（白）で配布。共通形状からビルド時に同期し、公開SVGの表示とビルド成功を確認。
 

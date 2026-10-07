@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run brand && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "brand": "node scripts/generate-brand.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

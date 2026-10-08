@@ -23,7 +23,7 @@ export function InviteShare({ id, invite }: { id: string; invite: string }) {
     </div>
     <p className="share-instruction">{platform === 'Instagram' ? 'カードを保存してストーリーズへ。リンクスタンプやDMに、コピーしたリンクを貼り付けてね。' : platform === 'Discord' ? '送りたいDMやチャンネルにリンクを貼り付けてね。カードは画像としても送れます。' : `${platform}を開いて、送りたい相手や投稿内容を選んでね。`}</p>
     <label className="share-link-label">招待リンク<input ref={input} readOnly value={url} onFocus={e => e.currentTarget.select()} /></label>
-    <div className="share-actions"><button type="button" className="button primary" onClick={() => void copy()}>リンクをコピー</button><a className="button light" href={composerUrl(platform, url)} target="_blank" rel="noopener noreferrer">{platform}を開く ↗</a><a className="share-save" href={`/api/share/card?platform=${platform.toLowerCase()}&download=1`} download={`yo-${platform.toLowerCase()}.png`}>カードを保存 ↓</a></div>
+    <div className="invite-actions"><button type="button" className="button primary" onClick={() => void copy()}>リンクをコピー</button><a className="button light" href={composerUrl(platform, url)} target="_blank" rel="noopener noreferrer">{platform}を開く ↗</a><a className="share-save" href={`/api/share/card?platform=${platform.toLowerCase()}&download=1`} download={`yo-${platform.toLowerCase()}.png`}>カードを保存 ↓</a></div>
     <p className="share-status" role="status">{notice || (manual ? 'リンクは「コピー」してから貼り付けてください。' : 'リンクのプレビューはSNS側の設定・キャッシュで変わる場合があります。')}</p>
     <p className="share-private">招待は作成から1時間。参加してほしい人だけに送ってください。</p>
   </section>;

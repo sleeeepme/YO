@@ -5,8 +5,8 @@
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_4JHQKpUNLCtBh9XjT6hhjw4E4iKN
-- 配信したアプリのコミット: 3412ea398a3f2ffc846b0af57d825b8fef8a0c18
+- デプロイID: dpl_3wnD81xetZj4U6gE91pdoVuu9CEP
+- 配信したアプリのコミット: 5c7d4f6c19cbfc96145c8312538bf00bb285c7ab
 
 ## 利用できること
 
@@ -80,3 +80,9 @@ Vercelのアクセス保護設定は変更していない。公開ドメイン�
 ## 全20種類・ランダム専用（2026-10-08）
 
 宇宙人・ロボ・ジェイソン（17〜19番）を追加。トップと実参加画面の指定一覧を撤去し、変更はランダムのみ。現在のIDを除外して抽選。9テストと本番ビルド成功、production READY。390px幅の参加画面でプレビュー1体・一覧0・ランダム変更5回すべて前回と異なる・横方向のはみ出しなし。トップのアバター画面でも一覧0・プレビュー1体・変更と保存を確認。参加APIは19番metadataを200で発行、範囲外20番は400。検証ルーム終了200・招待失効410。素材・生成プロンプトはassets/AVATARS.md。
+
+## Game recruitment title verification (2026-10-08)
+
+Optional 40-character game title in the invite modal, shown only for gaming. Included in copied text, social PNG cards and OGP description/image. Non-gaming shares omit the title; switching back retains input. Bundled full Noto Sans JP700 WOFF; no new environment variables or SQL.
+
+10 tests and production build passed; production READY. All four social cards returned 200 image/png. Japanese long-title wide/story cards visually verified. At 390px, input, copied message, link and card matched; no horizontal overflow. Browser test room was never joined and expires after one hour. Audio was outside this verification.

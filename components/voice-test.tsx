@@ -6,18 +6,21 @@ import { Avatar } from './avatar';
 import { Logo } from './logo';
 import { InviteShare } from './invite-share';
 import { RoomChat } from './room-chat';
+import { withDeadline } from '@/lib/voice/client';
 
 type Member = { id: string; name: string; seed: number; speaking: boolean; muted: boolean };
 type Connection = { token: string; serverUrl: string; title: string; capacity: number; expiresAt: string; host: boolean };
-async function api(path: string, input: unknown) {
+async function api(path: string, input: unknown, timeout = 20000) {
+  const abort = new AbortController();
+  const timer = window.setTimeout(() => abort.abort(), timeout);
   try {
-    const res = await fetch(`/api/voice/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input), signal: AbortSignal.timeout(20000) });
+    const res = await fetch(`/api/voice/${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input), signal: abort.signal });
     const result = await res.json(); if (!res.ok) throw new Error(result.error || '接続できませんでした。'); return result;
   } catch (error) {
-    if (error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')) throw new Error('接続に時間がかかっています。作成できたか確認できないため、少し待ってからページを開き直してください。');
+    if (error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')) throw new Error(path === 'create' ? '作成結果を確認できませんでした。少し待ってからページを開き直してください。' : '接続に時間がかかっています。少し待ってからもう一度お試しください。');
     if (error instanceof TypeError || error instanceof SyntaxError) throw new Error('通信できませんでした。通信環境を確認して、もう一度お試しください。');
     throw error;
-  }
+  } finally { window.clearTimeout(timer); }
 }
 function member(p: Participant): Member {
   let seed = 0; try { const value = JSON.parse(p.metadata || '{}').seed; if (Number.isInteger(value) && value >= 0 && value <= 3) seed = value; } catch { /* Invalid participant metadata is ignored. */ }
@@ -34,6 +37,8 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
   const [members, setMembers] = useState<Member[]>([]);
   const [mic, setMic] = useState(false);
   const [sound, setSound] = useState(true);
+  const [inLine, setInLine] = useState(false);
+  const [fallbackLink, setFallbackLink] = useState('');
   const inviteDialog = useRef<HTMLDialogElement>(null);
   const room = useRef<Room | null>(null);
   const soundRef = useRef(true);
@@ -54,9 +59,10 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
     mounted.current = true; const abort = new AbortController();
     fetch('/api/voice/status', { signal: abort.signal }).then(r => r.json()).then(d => { setReady(d.ready); if (!d.ready) setNotice(d.message); }).catch(() => { if (!abort.signal.aborted) { setReady(false); setNotice('接続状況を確認できませんでした。'); } });
     setSeed(Math.floor(Math.random() * 4));
+    setInLine(/\bLine\//i.test(navigator.userAgent));
     if (id) {
       const value = window.location.hash.slice(1);
-      try { if (value) { sessionStorage.setItem(`yo.invite.${id}`, value); window.history.replaceState(null, '', window.location.pathname + window.location.search); } setInvite(value || sessionStorage.getItem(`yo.invite.${id}`) || ''); } catch { setInvite(value); }
+      try { if (value) { sessionStorage.setItem(`yo.invite.${id}`, value); /* Keep the fragment for LINE's Open in browser action; it is never sent to the server. */ } setInvite(value || sessionStorage.getItem(`yo.invite.${id}`) || ''); } catch { setInvite(value); }
     }
     return () => { mounted.current = false; abort.abort(); const live = room.current; room.current = null; void live?.disconnect(); };
   }, [id]);
@@ -81,10 +87,16 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
     finally { creating.current = false; if (mounted.current) setBusy(false); }
   }
   async function join(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); if (!id || busy || room.current) return; setBusy(true); setNotice(''); setState('接続中');
-    const name = String(new FormData(event.currentTarget).get('name') || ''); let live: Room | null = null;
+    event.preventDefault(); if (!id || busy || room.current) return;
+    const form = event.currentTarget;
+    const name = String(new FormData(form).get('name') || '').trim();
+    if (!name) { setNotice('表示名を入力してから参加してください。'); form.querySelector<HTMLInputElement>('[name="name"]')?.focus(); return; }
+    if (!invite) { setNotice('招待情報がありません。LINEで受け取ったリンク全体を開き直してください。'); return; }
+    if (typeof window.RTCPeerConnection !== 'function') { setNotice('このブラウザでは音声通話を利用できません。下のリンクをコピーしてSafariまたはChromeで開いてください。'); return; }
+    setBusy(true); setNotice('ルームへの参加を確認しています…'); setState('接続中');
+    let live: Room | null = null;
     try {
-      const { Room, RoomEvent, Track } = await import('livekit-client');
+      const { Room, RoomEvent, Track } = await withDeadline(import('livekit-client'), 20000, '通話の読み込みに時間がかかっています。通信環境を確認して再度お試しください。');
       const result: Connection = await api('join', { id, invite, name, seed });
       if (!mounted.current) { await api('leave', { id }).catch(() => undefined); return; }
       live = new Room({ adaptiveStream: false, dynacast: false }); room.current = live;
@@ -94,15 +106,19 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
       live.on(RoomEvent.Reconnecting, () => setState('再接続中'));
       live.on(RoomEvent.Reconnected, () => { setState('通話中'); update(); });
       live.on(RoomEvent.Disconnected, () => { if (room.current === live) { room.current = null; setState('退出しました'); setMembers([]); setMic(false); setConnection(undefined); } });
-      await live.connect(result.serverUrl, result.token);
+      setNotice('音声通話に接続しています…');
+      await withDeadline(live.connect(result.serverUrl, result.token, { websocketTimeout: 10000, peerConnectionTimeout: 15000, maxRetries: 1 }), 30000, '音声通話に接続できませんでした。SafariまたはChromeで開き直すか、通信環境を変えてお試しください。');
       if (!mounted.current) { await live.disconnect(); return; }
       setConnection(result); setState('通話中'); update();
       try { await live.startAudio(); setNotice('参加しました。話すときはマイクをONにしてください。'); } catch { setSound(false); soundRef.current = false; setNotice('音声を聞くには「音声を再生」を押してください。'); }
       // Joining is silent. Microphone permission is requested only on an explicit tap.
     } catch (error) {
-      room.current = null; await live?.disconnect(); setState('未接続'); setConnection(undefined);
-      setNotice(error instanceof Error ? error.message : '参加できませんでした。');
-      await api('leave', { id }).catch(() => undefined);
+      room.current = null; setState('未接続'); setConnection(undefined);
+      const message = error instanceof Error ? error.message : '参加できませんでした。';
+      setNotice(/setConfiguration|RTCPeerConnection|WebRTC|could not establish|signal connection|peer connection/i.test(message) ? 'このブラウザでは音声通話に接続できませんでした。下のリンクをコピーし、SafariまたはChromeで開いて再度お試しください。' : message);
+      await withDeadline(Promise.resolve(live?.disconnect()), 5000, '切断待ち').catch(() => undefined);
+      audio.current?.replaceChildren();
+      await api('leave', { id }, 5000).catch(() => undefined);
     } finally { if (mounted.current) setBusy(false); }
   }
   async function toggleMic() {
@@ -130,7 +146,7 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
     {id ? <header className="site-header"><Link href="/" aria-label="YO トップ"><Logo /></Link><span className="preview-chip">招待ゲスト通話テスト</span></header> : null}
     <div className="voice-test-layout">
       {hero ? null : <div className="voice-test-info"><span className="section-label">INVITE. JOIN. TALK.</span><h2>{id ? (connection?.title || '友達と、同じルームへ。') : '招待した友達と、話してみよう。'}</h2><p>招待リンクを知っている人だけの限定テスト。<br />最大8人・登録なし・録音なし。</p><p className="voice-test-caution">このテストでは友達関係の判定は行いません。<br />リンクは参加してほしい人だけに送ってください。</p><p role="status" className="notice">{(ready !== true || !!connection) ? notice || (ready === null ? '接続状況を確認中…' : '') : ''}</p>{ready === false ? <p>音声サービスの設定が完了したら、ここから参加できます。</p> : null}</div>}
-      {id && connection ? <div className="voice-phone"><div className="voice-top"><span>‹</span><span>YO</span></div><h3>{connection.title}</h3><p className="voice-clock">{members.length} / {connection.capacity}</p><p className="voice-preview" role="status">{state}</p><div className="voice-members">{members.map(p => <div key={p.id}><div className={`voice-avatar ${p.speaking ? 'speaking' : ''}`}><Avatar seed={p.seed} /></div><p>{p.name}{p.muted ? ' · 静かに参加' : ''}</p></div>)}</div><div className="voice-controls"><button aria-label={mic ? 'マイクをOFF' : 'マイクをON'} aria-pressed={mic} onClick={toggleMic} disabled={busy}>{mic ? '🎙' : '🔇'}</button><button aria-label={sound ? '音声を消す' : '音声を再生'} aria-pressed={sound} onClick={toggleSound}>{sound ? '🔊' : '🔈'}</button><button aria-label="招待リンク" aria-haspopup="dialog" onClick={openInvite}>↗</button></div><button className="hangup" aria-label="通話から退出" disabled={busy} onClick={() => void leave()}>☎</button>{connection.host ? <button className="detail-link" disabled={busy} onClick={() => void leave(true)}>全員のルームを終了</button> : null}<button type="button" className="voice-share-trigger" aria-haspopup="dialog" onClick={openInvite}>招待リンク<span>友達を招待する ↗</span></button></div> : ready === true || hero ? <div className="join-card voice-test-form">{hero ? null : <div className="join-art"><Avatar seed={seed} /><Avatar seed={(seed+1)%4} /></div>}<div className="white-card-body"><h3>{id ? 'あなたの呼び名は？' : 'ルームを作る'}</h3><form onSubmit={id ? join : create} noValidate={!id} aria-busy={busy}>{id ? <><label>表示名<input name="name" maxLength={20} required autoComplete="nickname" placeholder="例：Daisuke" /></label><button className="button light" type="button" onClick={() => setSeed((seed+1)%4)}>別のアバターにする</button></> : <><label>ルーム名<input name="title" defaultValue={defaultTitle} maxLength={40} required placeholder="例：FRIDAY DRINK" /></label><label>定員<select name="capacity" defaultValue="8">{[2,3,4,5,6,7,8].map(n => <option value={n} key={n}>{n}人</option>)}</select></label></>}<p className="form-status" role="status" aria-live="polite">{notice || (ready === null ? '接続状況を確認中…' : '')}</p><button className="button primary" disabled={busy || ready !== true || (!!id && !invite)} type="submit">{busy ? (id ? '接続中…' : 'ルームを作成中…') : id ? '静かに参加する' : 'ルームを作る'}</button>{id && !invite ? <p className="card-fine-print">招待リンクを受け取って開き直してください。</p> : null}<p className="card-fine-print">マイクは参加後にONにできます。<br />招待の有効期限は作成から1時間です。{hero ? <><br />最大8人・ログイン不要。招待リンクは参加してほしい人だけに。</> : null}</p></form></div></div> : null}
-    </div>{id && invite && !connection ? <div className="invite-entry"><button type="button" className="voice-share-trigger" aria-haspopup="dialog" onClick={openInvite}>招待リンク<span>友達を招待する ↗</span></button></div> : null}{id && connection && room.current ? <RoomChat room={room.current} connected={state === '通話中'} /> : null}{id && invite ? <dialog ref={inviteDialog} className="invite-share-dialog" aria-labelledby="invite-share-title" onClick={event => { if (event.target !== event.currentTarget) return; const rect = event.currentTarget.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) event.currentTarget.close(); }}><div className="invite-dialog-toolbar"><span>招待リンクを共有</span><button type="button" aria-label="招待画面を閉じる" onClick={() => inviteDialog.current?.close()}>閉じる <span aria-hidden="true">×</span></button></div><div className="invite-dialog-content"><InviteShare id={id} invite={invite} /></div></dialog> : null}<div ref={audio} className="voice-audio" />{id ? <footer><Link href="/">YOトップに戻る</Link></footer> : null}
+      {id && connection ? <div className="voice-phone"><div className="voice-top"><span>‹</span><span>YO</span></div><h3>{connection.title}</h3><p className="voice-clock">{members.length} / {connection.capacity}</p><p className="voice-preview" role="status">{state}</p><div className="voice-members">{members.map(p => <div key={p.id}><div className={`voice-avatar ${p.speaking ? 'speaking' : ''}`}><Avatar seed={p.seed} /></div><p>{p.name}{p.muted ? ' · 静かに参加' : ''}</p></div>)}</div><div className="voice-controls"><button aria-label={mic ? 'マイクをOFF' : 'マイクをON'} aria-pressed={mic} onClick={toggleMic} disabled={busy}>{mic ? '🎙' : '🔇'}</button><button aria-label={sound ? '音声を消す' : '音声を再生'} aria-pressed={sound} onClick={toggleSound}>{sound ? '🔊' : '🔈'}</button><button aria-label="招待リンク" aria-haspopup="dialog" onClick={openInvite}>↗</button></div><button className="hangup" aria-label="通話から退出" disabled={busy} onClick={() => void leave()}>☎</button>{connection.host ? <button className="detail-link" disabled={busy} onClick={() => void leave(true)}>全員のルームを終了</button> : null}<button type="button" className="voice-share-trigger" aria-haspopup="dialog" onClick={openInvite}>招待リンク<span>友達を招待する ↗</span></button></div> : ready === true || hero ? <div className="join-card voice-test-form">{hero ? null : <div className="join-art"><Avatar seed={seed} /><Avatar seed={(seed+1)%4} /></div>}<div className="white-card-body"><h3>{id ? 'あなたの呼び名は？' : 'ルームを作る'}</h3><form onSubmit={id ? join : create} noValidate aria-busy={busy}>{id ? <><label>表示名<input name="name" maxLength={20} required autoComplete="nickname" placeholder="例：Daisuke" /></label><button className="button light" type="button" onClick={() => setSeed((seed+1)%4)}>別のアバターにする</button></> : <><label>ルーム名<input name="title" defaultValue={defaultTitle} maxLength={40} required placeholder="例：FRIDAY DRINK" /></label><label>定員<select name="capacity" defaultValue="8">{[2,3,4,5,6,7,8].map(n => <option value={n} key={n}>{n}人</option>)}</select></label></>}<p className="form-status" role="status" aria-live="polite">{notice || (ready === null ? '接続状況を確認中…' : '')}</p><button className="button primary" disabled={busy || ready !== true || (!!id && !invite)} type="submit">{busy ? (id ? '接続中…' : 'ルームを作成中…') : id ? '静かに参加する' : 'ルームを作る'}</button>{id && !invite ? <p className="card-fine-print" role="alert">招待リンクを受け取って開き直してください。</p> : null}<p className="card-fine-print">マイクは参加後にONにできます。<br />招待の有効期限は作成から1時間です。{hero ? <><br />最大8人・ログイン不要。招待リンクは参加してほしい人だけに。</> : null}</p></form></div></div> : null}
+    </div>{id && invite && !connection ? <div className="voice-browser-help"><p>{inLine ? 'LINEから参加する場合はSafari・Chromeで開くとスムーズです。' : '参加できないときは、Safari・Chromeでこのリンクを開いてください。'}</p><button type="button" className="button light" onClick={async () => { const url = new URL(window.location.href); url.searchParams.set('openExternalBrowser', '1'); url.hash = invite; setFallbackLink(url.toString()); try { await navigator.clipboard.writeText(url.toString()); setNotice('招待リンクをコピーしました。Safari・Chromeのアドレス欄に貼り付けて開いてください。'); } catch { setNotice('下の招待リンクを長押ししてコピーし、Safari・Chromeで開いてください。'); } }}>ブラウザで開くためのリンクをコピー</button>{fallbackLink ? <label>招待リンク<input readOnly value={fallbackLink} onFocus={e => e.currentTarget.select()} /></label> : null}{inLine ? <p>LINEのメニューから「ブラウザで開く」も選べます。</p> : null}</div> : null}{id && invite && !connection ? <div className="invite-entry"><button type="button" className="voice-share-trigger" aria-haspopup="dialog" onClick={openInvite}>招待リンク<span>友達を招待する ↗</span></button></div> : null}{id && connection && room.current ? <RoomChat room={room.current} connected={state === '通話中'} /> : null}{id && invite ? <dialog ref={inviteDialog} className="invite-share-dialog" aria-labelledby="invite-share-title" onClick={event => { if (event.target !== event.currentTarget) return; const rect = event.currentTarget.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) event.currentTarget.close(); }}><div className="invite-dialog-toolbar"><span>招待リンクを共有</span><button type="button" aria-label="招待画面を閉じる" onClick={() => inviteDialog.current?.close()}>閉じる <span aria-hidden="true">×</span></button></div><div className="invite-dialog-content"><InviteShare id={id} invite={invite} /></div></dialog> : null}<div ref={audio} className="voice-audio" />{id ? <footer><Link href="/">YOトップに戻る</Link></footer> : null}
   </section>;
 }

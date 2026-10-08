@@ -9,6 +9,7 @@ test('all share links retain invitation in fragment, including nested composer U
     const url = new URL(inviteUrl('https://yo.example', 'yo-room', secret, platform));
     assert.equal(url.hash, `#${secret}`);
     assert.equal(url.searchParams.get('share'), platform.toLowerCase());
+    assert.equal(url.searchParams.get('openExternalBrowser'), platform === 'LINE' ? '1' : null);
     assert.ok(!url.search.includes(secret));
     if (platform === 'LINE' || platform === 'X') assert.equal(new URL(composerUrl(platform, url.toString())).searchParams.get('url'), url.toString());
   }

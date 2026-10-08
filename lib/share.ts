@@ -28,6 +28,8 @@ export function inviteUrl(origin: string, id: string, invite: string, platform: 
   const url = new URL(`/call/${id}`, origin);
   url.searchParams.set('share', platform.toLowerCase());
   url.searchParams.set('activity', activity);
+  // LINE officially supports opening ordinary links in the external browser.
+  if (platform === 'LINE') url.searchParams.set('openExternalBrowser', '1');
   if (until) url.searchParams.set('until', String(until));
   url.hash = invite;
   return url.toString();

@@ -103,3 +103,31 @@ html,body{touch-action:pan-x pan-y}
 
 .share-instagram-save { width: 100%; min-height: 56px; margin: 18px 0 14px; padding: 16px 24px; border-radius: 999px; font-size: 16px; font-weight: 700; background: linear-gradient(115deg,#be56ff,#8e31ff 48%,#5938f8); border: 1px solid #da91ff77; box-shadow: 0 5px 20px #9939ff44; }
 .share-instagram-save span { font-size: 24px; line-height: 1; }
+
+/* In-call controls take precedence over the landing-page introduction. */
+.call-active .site-header { padding: 10px 0; }
+.call-active .voice-test-layout { margin: 12px auto 18px; grid-template-columns: 1fr; gap: 8px; }
+.call-active .voice-test-info { max-width: 540px; width: 100%; margin: auto; }
+.call-active .voice-test-info .section-label, .call-active .voice-test-info h2 { display: none; }
+.call-active .voice-test-info .notice { margin: 0; min-height: 0; }
+.call-active .voice-test-info .notice:empty { display: none; }
+.call-active .voice-phone { width: 100%; max-width: 540px; min-height: 0; margin: 0 auto; padding: 14px 20px; }
+.call-active .voice-top { display: none; }
+.call-active .voice-phone h3 { margin-top: 0; }
+.call-active .voice-clock { margin-top: 4px; }
+.room-expiry { margin-left: 14px; font-size: 11px; color: #b6a8cd; }
+.call-active .voice-members { margin: 16px 0 18px; gap: 14px 12px; }
+.call-active .voice-controls { margin-top: 0; }
+.call-active .hangup { margin-top: 12px; }
+.call-active .voice-share-trigger { margin-top: 12px; }
+.call-active .room-chat { margin-top: 16px; }
+@media(max-width:680px) {
+  .call-active .site-header .yo-logo { width: 54px; height: 32px; }
+  .call-active .voice-test-layout { margin-top: 8px; }
+  .call-active .voice-members { margin: 12px 0 14px; gap: 12px 8px; }
+  .call-active .voice-avatar { width: 58px; height: 58px; }
+  .call-active .voice-avatar .avatar { width: 59px; }
+  .call-active .voice-members p { font-size: 10px; margin-top: 5px; }
+  .call-active .voice-controls > button { width: 44px; height: 44px; }
+  .call-active .hangup { width: 46px; height: 46px; margin-top: 10px; }
+}

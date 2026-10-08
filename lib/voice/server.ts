@@ -4,8 +4,8 @@ import { RoomServiceClient } from 'livekit-server-sdk';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { signGuest, verifyGuest } from './security';
-const required = ['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'YO_SESSION_SECRET', 'YO_TEST_HOST_CODE'] as const;
-export function configured() { return process.env.YO_VOICE_ENABLED === 'true' && required.every(k => !!process.env[k]?.trim()) && (process.env.YO_SESSION_SECRET?.length ?? 0) >= 32 && (process.env.YO_TEST_HOST_CODE?.length ?? 0) >= 16; }
+const required = ['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'YO_SESSION_SECRET'] as const;
+export function configured() { return process.env.YO_VOICE_ENABLED === 'true' && required.every(k => !!process.env[k]?.trim()) && (process.env.YO_SESSION_SECRET?.length ?? 0) >= 32; }
 export function services() {
   if (!configured()) throw new VoiceError('通話テストはまだ準備中です。', 503);
   return { db: createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } }), live: new RoomServiceClient(process.env.LIVEKIT_URL!.replace(/^wss:/, 'https:'), process.env.LIVEKIT_API_KEY!, process.env.LIVEKIT_API_SECRET!) };

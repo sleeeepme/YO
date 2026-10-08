@@ -25,7 +25,7 @@ export function UsageGuide({ onCreate }: { onCreate: () => void }) {
           <li><span className="usage-step-number">1</span><GuideScreen kind="create" /><h4>ルームを作る</h4><p>気分を選んで、ルーム名と人数を決める。</p></li>
           <li><span className="usage-step-number">2</span><GuideScreen kind="invite" /><h4>友達を招待する</h4><p>リンクをコピーして、SNSやDMで友達に送る。</p></li>
         </ol>
-        <div className="usage-path-footer"><p>現在は限定テスト用のホストコードが必要です。</p><button type="button" className="button primary" aria-haspopup="dialog" onClick={onCreate}>ルームを作ってみる ＋</button></div>
+        <div className="usage-path-footer"><p>ログイン・ホスト用コード不要。すぐに作れます。</p><button type="button" className="button primary" aria-haspopup="dialog" onClick={onCreate}>ルームを作ってみる ＋</button></div>
       </section>
       <section className="usage-path guest-path" aria-labelledby="guest-path-title">
         <header><span className="usage-role">参加者</span><h3 id="guest-path-title">友達の招待から参加する</h3></header>

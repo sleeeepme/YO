@@ -69,3 +69,7 @@
 .avatar-options.avatar-picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;max-width:340px;margin:14px auto 20px}.avatar-picker button{position:relative;width:100%;height:auto;aspect-ratio:1;border-radius:12px}.avatar-picker button .avatar{width:80%;max-width:54px}.avatar-picker button[aria-pressed=true]{border-color:#8547ff;background:#ede1ff;box-shadow:0 0 0 2px #ba91ff55}.avatar-selected-mark{display:none;position:absolute;bottom:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#752afa;color:white;font-size:11px;line-height:16px;text-align:center}.avatar-picker button[aria-pressed=true] .avatar-selected-mark{display:block}.voice-test-form .avatar-picker button{margin:0}.avatar-picker button:disabled{cursor:wait}
 
 .share-game-title{grid-column:1/-1}.share-game-title input{display:block;width:100%;min-height:45px;margin:8px 0;padding:12px;border:1px solid #856ba4;border-radius:12px;background:#17182c;color:white;font:inherit;font-size:16px}.share-game-title small{display:block;color:#bcaecf;font-size:11px;line-height:1.6}
+
+/* Keep page gestures to scrolling; form text below 16px triggers iPhone focus zoom. */
+html,body{touch-action:pan-x pan-y}
+@media(max-width:900px){input,select,textarea{font-size:16px!important}}

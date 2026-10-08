@@ -144,3 +144,16 @@ html,body{touch-action:pan-x pan-y}
 .control-slash { paint-order: stroke; stroke-width: 2.2; }
 .invite-modal-backdrop { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 10px; background: #050719bc; backdrop-filter: blur(7px); }
 .invite-modal-backdrop .invite-share-dialog { display: block; position: relative; margin: 0; flex-shrink: 0; }
+
+
+/* Standard actions use a pill shape; illustrated choice cards retain their layout. */
+.button, .text-button, .detail-link, .voice-share-trigger, .avatar-random-button,
+.invite-dialog-toolbar button, .room-chat button, .call-active .voice-controls > button,
+.hangup, .modal-close { border-radius: 999px !important; }
+.call-active .voice-controls { gap: 8px; }
+.call-active .voice-controls > button { display: inline-flex; align-items: center; justify-content: center; min-width: 0; min-height: 44px; padding: 8px 6px; gap: 5px; background: #252738; border: 1px solid #4c4864; }
+.call-active .voice-controls svg { flex-shrink: 0; width: 19px; height: 19px; }
+.call-active .voice-controls span { font-size: 9px; }
+.call-active .voice-controls button[aria-pressed="true"] { background: #43315f; border-color: #9c75d8; }
+.call-active .voice-controls button:hover { background: #51406b; }
+.call-active .hangup { width: 92px; height: 44px; }

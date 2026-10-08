@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const connected = (await live.listParticipants(room.id)).map(p => p.identity);
     const { data, error } = await db.rpc('yo_voice_reserve', { p_room: room.id, p_guest: identity, p_connected: connected });
     if (error) throw error;
-    if (!data) throw new VoiceError('このテーブルは満員です。別のテーブルを作ってください。', 409);
+    if (!data) throw new VoiceError('このルームは満員です。別のルームを作ってください。', 409);
     const token = new AccessToken(process.env.LIVEKIT_API_KEY!, process.env.LIVEKIT_API_SECRET!, { identity, name, metadata: JSON.stringify({ seed }), ttl: 40 });
     token.addGrant({ roomJoin: true, room: room.id, canSubscribe: true, canPublish: true, canPublishSources: [TrackSource.MICROPHONE], canPublishData: false, canUpdateOwnMetadata: false });
     // A late token must never auto-create an uncapped room.

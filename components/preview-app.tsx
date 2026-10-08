@@ -59,7 +59,7 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
     <header className="site-header home-header"><Link href="/" aria-label="YO トップ"><Logo /></Link><span className="brand-tagline">Say YO. Hang out.</span><nav aria-label="メインナビゲーション"><button onClick={() => document.getElementById('room-create')?.scrollIntoView({ behavior: 'smooth' })}>ルーム</button><button onClick={() => showStep('avatar')}>アバター</button><button onClick={() => showModal('about')}>YOについて</button></nav><span className="preview-chip"><i />デザインプレビュー</span></header>
     <main id="main" className="home-main" tabIndex={-1}>
       <section className="intro hero" aria-label="YOへようこそ">
-        <div className="hero-visual" aria-hidden="true"><Image src="/hero-lounge-v1.webp" alt="" fill priority sizes="100vw" /></div>
+        <div className="hero-visual" aria-hidden="true"><Image src="/hero-virtual-v1.webp" alt="" fill priority sizes="100vw" /></div>
         <div className="hero-content"><p className="eyebrow">Say YO. Hang out.</p><h1>これから、ちょっと集まろ。</h1><p className="intro-copy">飲んだり、遊んだり、ただしゃべったり。<br />ひまな時間に、友達とサクッとボイチャ。</p>
           <section id="room-create" className="mood-choices" aria-label="気分を選んでルームを作る">
             <h2 className="mood-prompt">今日はどんな気分？</h2>

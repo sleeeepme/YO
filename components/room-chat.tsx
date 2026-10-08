@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { type Room, type RemoteParticipant, type DataPacket_Kind } from 'livekit-client';
 import { CHAT_MAX_LENGTH, CHAT_TOPIC, decodeChat, encodeChat } from '@/lib/voice/chat';
 type Message = { key: string; name: string; body: string; own: boolean; time: string };
-export function RoomChat({ room, connected }: { room: Room; connected: boolean }) {
+export function RoomChat({ room, connected, onIncomingMessage }: { room: Room; connected: boolean; onIncomingMessage?: () => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
@@ -24,6 +24,7 @@ export function RoomChat({ room, connected }: { room: Room; connected: boolean }
       if (recent.length >= 3) return;
       recent.push(now); rates.set(participant.identity, recent); seen.add(key);
       if (seen.size > 400) seen.delete(seen.values().next().value!);
+      onIncomingMessage?.();
       setMessages(m => [...m, { key, name: (participant.name || 'ゲスト').slice(0, 20), body: packet.body, own: false, time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) }].slice(-200));
     };
     const forget = (p: RemoteParticipant) => rates.delete(p.identity);
@@ -34,7 +35,7 @@ export function RoomChat({ room, connected }: { room: Room; connected: boolean }
       dispose = () => { room.off(RoomEvent.DataReceived, receive); room.off(RoomEvent.ParticipantDisconnected, forget); };
     });
     return () => { cancelled = true; active.current = false; dispose(); };
-  }, [room]);
+  }, [room, onIncomingMessage]);
   useEffect(() => { if (follow.current && list.current) list.current.scrollTop = list.current.scrollHeight; }, [messages]);
   async function send(event: FormEvent) {
     event.preventDefault(); if (sending.current || !connected) return;

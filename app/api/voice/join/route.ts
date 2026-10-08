@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
     if (!data) throw new VoiceError('このルームは満員です。別のルームを作ってください。', 409);
     const token = new AccessToken(process.env.LIVEKIT_API_KEY!, process.env.LIVEKIT_API_SECRET!, { identity, name, metadata: JSON.stringify({ seed }), ttl: 40 });
-    token.addGrant({ roomJoin: true, room: room.id, canSubscribe: true, canPublish: true, canPublishSources: [TrackSource.MICROPHONE], canPublishData: false, canUpdateOwnMetadata: false });
+    token.addGrant({ roomJoin: true, room: room.id, canSubscribe: true, canPublish: true, canPublishSources: [TrackSource.MICROPHONE], canPublishData: true, canUpdateOwnMetadata: false });
     // A late token must never auto-create an uncapped room.
     token.roomConfig = new RoomConfiguration({ name: room.id, maxParticipants: room.capacity });
     return response({ token: await token.toJwt(), serverUrl: process.env.LIVEKIT_URL, title: room.title, capacity: room.capacity, expiresAt: room.expires_at, host: room.host_id === identity });

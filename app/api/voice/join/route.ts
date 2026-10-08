@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { AccessToken, TrackSource, RoomConfiguration } from 'livekit-server-sdk';
 import { body, failed, getRoom, guest, rate, response, services, VoiceError } from '@/lib/voice/server';
 import { equal, hash, validInvite, validRoom } from '@/lib/voice/security';
+import { validAvatar } from '@/lib/avatars';
 export const runtime = 'nodejs';
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
     const room = await getRoom(input.id);
     if (!equal(hash(input.invite, process.env.YO_SESSION_SECRET!), room.invite_hash)) throw new VoiceError('招待リンクが無効です。', 403);
     const name = typeof input.name === 'string' ? input.name.trim() : ''; const seed = input.seed;
-    if (!name || name.length > 20 || /[\x00-\x1f]/.test(name) || typeof seed !== 'number' || !Number.isInteger(seed) || seed < 0 || seed > 3) throw new VoiceError('表示名とアバターを確認してください。');
+    if (!name || name.length > 20 || /[\x00-\x1f]/.test(name) || !validAvatar(seed)) throw new VoiceError('表示名とアバターを確認してください。');
     const identity = await guest(true); await rate(`token:${identity}`, 10);
     // Re-create an empty room only after invite validation, preserving its configured cap.
     const liveRooms = await live.listRooms([room.id]);

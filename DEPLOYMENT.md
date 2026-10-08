@@ -5,8 +5,8 @@
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_3wnD81xetZj4U6gE91pdoVuu9CEP
-- 配信したアプリのコミット: 5c7d4f6c19cbfc96145c8312538bf00bb285c7ab
+- デプロイID: dpl_47R3VnqndTtTvyhja6qnw1GLFFd8
+- 配信したアプリのコミット: 7c3ff8d0488226d2a5c83cdefbb904abc0480368
 
 ## 利用できること
 
@@ -86,3 +86,7 @@ Vercelのアクセス保護設定は変更していない。公開ドメイン�
 Optional 40-character game title in the invite modal, shown only for gaming. Included in copied text, social PNG cards and OGP description/image. Non-gaming shares omit the title; switching back retains input. Bundled full Noto Sans JP700 WOFF; no new environment variables or SQL.
 
 10 tests and production build passed; production READY. All four social cards returned 200 image/png. Japanese long-title wide/story cards visually verified. At 390px, input, copied message, link and card matched; no horizontal overflow. Browser test room was never joined and expires after one hour. Audio was outside this verification.
+
+## Mobile zoom settings (2026-10-08)
+
+Mobile inputs/selects/textareas at 900px and below use 16px text to prevent iPhone focus zoom. Global viewport: device-width, initial-scale=1, maximum-scale=1, user-scalable=no. html/body touch-action allows horizontal/vertical panning without pinch zoom. Production build passed; production READY. At 390px, name input computed size=16px, viewport values correct, touch-action=pan-x pan-y, visualViewport.scale=1 after focus and text input, no horizontal overflow. Actual iPhone Safari and OS accessibility overrides were not tested; browser-specific forced zoom may override page preferences.

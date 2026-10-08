@@ -131,3 +131,16 @@ html,body{touch-action:pan-x pan-y}
   .call-active .voice-controls > button { width: 44px; height: 44px; }
   .call-active .hangup { width: 46px; height: 46px; margin-top: 10px; }
 }
+
+/* Monochrome controls with visible state labels; sharing renders above the call. */
+.call-active .voice-controls { gap: 14px; }
+.call-active .voice-controls > button { width: auto; height: auto; min-height: 62px; flex: 1; border: 0; background: transparent; border-radius: 12px; gap: 5px; padding: 4px; color: #e8e7f4; }
+.call-active .voice-controls svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.call-active .voice-controls span { font-size: 10px; white-space: nowrap; }
+.call-active .voice-controls button[aria-pressed="false"] { color: #aaa6bd; }
+.call-active .voice-controls button[aria-pressed="true"] { color: #fff; }
+.call-active .voice-controls button:hover { background: #ffffff0d; }
+.call-active .voice-controls button:focus-visible { outline: 2px solid #c69cff; outline-offset: 2px; }
+.control-slash { paint-order: stroke; stroke-width: 2.2; }
+.invite-modal-backdrop { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 10px; background: #050719bc; backdrop-filter: blur(7px); }
+.invite-modal-backdrop .invite-share-dialog { display: block; position: relative; margin: 0; flex-shrink: 0; }

@@ -60,10 +60,10 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
         <div className="hero-visual" aria-hidden="true"><Image src="/hero-lounge-v1.webp" alt="" fill priority sizes="100vw" /></div>
         <div className="hero-content"><p className="eyebrow">Say YO. Hang out.</p><h1>これから、ちょっと集まろ。</h1><p className="intro-copy">飲んだり、遊んだり、ただしゃべったり。<br />ひまな時間に、友達とサクッとボイチャ。</p>
           <section id="room-create" className="mood-choices" aria-label="気分を選んでルームを作る">
-            <p className="mood-prompt">今日は、どんな気分？</p>
+            <h2 className="mood-prompt">今日はどんな気分？</h2>
             <div className="mood-grid">{rooms.map((room, index) => <button type="button" key={room.mood} className={`mood-choice mood-${room.mood}`} aria-label={`${moodLabels[room.mood]}：ルームを作る`} aria-haspopup="dialog" onClick={() => { setCreationMood(room.mood); setCreationVersion(value => value + 1); showModal('create'); }}>
               <span className="mood-character" style={{ backgroundPosition: `${index * 50}% center` }} aria-hidden="true" />
-              <strong>{moodLabels[room.mood]}</strong><span className="mood-subtitle">{room.title}</span>
+              <strong>{moodLabels[room.mood]}</strong><span className="mood-subtitle">{room.mood === 'game' ? 'みんなで遊ぼう' : room.title}</span>
               <span className="mood-action">ルームを作る <span aria-hidden="true">＋</span></span>
             </button>)}</div>
           </section>

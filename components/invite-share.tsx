@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { activities, cardUrl, composerUrl, endTimeText, invitationText, inviteUrl, platforms, shareActivity, type Activity, type Platform } from '@/lib/share';
+import { activities, cardUrl, composerUrl, endTimeText, invitationText, inviteUrl, platforms, shareActivity, sharePlatform, shareUntil, type Activity, type Platform } from '@/lib/share';
 import { SocialIcon } from './socials';
 
 export function InviteShare({ id, invite }: { id: string; invite: string }) {
@@ -20,12 +20,17 @@ export function InviteShare({ id, invite }: { id: string; invite: string }) {
   const expired = !!expiresAt && now >= expiresAt;
   useEffect(() => {
     const abort = new AbortController();
-    setActivity(shareActivity(new URLSearchParams(window.location.search).get('activity')));
+    const query = new URLSearchParams(window.location.search);
+    const sharedUntil = shareUntil(query.get('until'));
+    setPlatform(sharePlatform(query.get('share')));
+    setActivity(shareActivity(query.get('activity')));
+    if (sharedUntil) { setUntil(sharedUntil); setDuration('shared'); }
     fetch('/api/voice/invite', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, invite }), signal: abort.signal }).then(async r => {
       const value = await r.json(); if (!r.ok) throw new Error(value.error || '終了時刻を確認できませんでした。');
       if (abort.signal.aborted) return;
       const expiry = Date.parse(value.expiresAt); if (!Number.isFinite(expiry)) throw new Error('終了時刻を確認できませんでした。');
       setExpiresAt(expiry); setInfoError('');
+      if (sharedUntil && sharedUntil > expiry) { setUntil(undefined); setDuration('none'); }
     }).catch(error => { if (!abort.signal.aborted) setInfoError(error instanceof Error ? error.message : '終了時刻を確認できませんでした。'); });
     const timer = window.setInterval(() => setNow(Date.now()), 30000);
     return () => { abort.abort(); window.clearInterval(timer); };
@@ -46,7 +51,7 @@ export function InviteShare({ id, invite }: { id: string; invite: string }) {
   return <section className="invite-share-panel" aria-labelledby="invite-share-title">
     <div className="share-heading"><span className="section-label">INVITE YOUR FRIENDS</span><h3 id="invite-share-title">友達を招待しよう</h3><p>どこに送る？カードとリンクを選んでシェア。</p></div>
     <div className="share-platforms" aria-label="投稿先のSNS">{platforms.map(p => <button type="button" key={p} aria-pressed={platform === p} onClick={() => { setPlatform(p); setNotice(''); }}><SocialIcon name={p} /><span>{p}</span></button>)}</div>
-    <div className="share-options"><label>今、何してる？<select value={activity} onChange={e => { setActivity(shareActivity(e.target.value)); setNotice(''); }}>{(Object.keys(activities) as Activity[]).map(key => <option key={key} value={key}>{activities[key].label}</option>)}</select></label><label>あとどのくらいやる予定？<select value={duration} onChange={e => chooseDuration(e.target.value)} disabled={!expiresAt || expired}><option value="none">未定・時間を書かない</option>{[15,30,45].map(n => <option key={n} value={n} disabled={!expiresAt || now + n * 60000 > expiresAt}>あと{n}分くらい</option>)}<option value="max">ルーム終了まで（最大1時間）</option></select></label></div>
+    <div className="share-options"><label>今、何してる？<select value={activity} onChange={e => { setActivity(shareActivity(e.target.value)); setNotice(''); }}>{(Object.keys(activities) as Activity[]).map(key => <option key={key} value={key}>{activities[key].label}</option>)}</select></label><label>あとどのくらいやる予定？<select value={duration} onChange={e => chooseDuration(e.target.value)} disabled={!expiresAt || expired}>{duration === 'shared' ? <option value="shared">共有時に選んだ予定</option> : null}<option value="none">未定・時間を書かない</option>{[15,30,45].map(n => <option key={n} value={n} disabled={!expiresAt || now + n * 60000 > expiresAt}>あと{n}分くらい</option>)}<option value="max">ルーム終了まで（最大1時間）</option></select></label></div>
     <p className="share-time-note" role="status">{expired ? 'このルームは終了時刻を過ぎています。新しいルームを作ってください。' : infoError || (expiresAt ? `ルーム終了：${new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(expiresAt)}（日本時間）。終了予定は目安です。` : 'ルームの終了時刻を確認中…')}</p>
     <div className={`share-card-preview ${platform === 'Instagram' ? 'share-story' : ''}`}>
       {/* Generated same-origin PNG is also the downloadable/OGP asset. */}

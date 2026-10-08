@@ -29,7 +29,7 @@ export function UsageGuide({ onCreate }: { onCreate: () => void }) {
       </section>
       <section className="usage-path guest-path" aria-labelledby="guest-path-title">
         <header><span className="usage-role">参加者</span><h3 id="guest-path-title">友達の招待から参加する</h3></header>
-        <div className="usage-story-art guest-story"><Image src="/game-virtual-v1.webp" alt="コントローラーを持った友達と、バーチャル空間でゲームを楽しむキャラクターたち" fill sizes="(max-width:900px) 90vw, 560px" /><span>「あと一戦、一緒にやろ！」</span></div>
+        <div className="usage-story-art guest-story"><Image src="/game-virtual-v1.webp" alt="コントローラーを持った友達と、バーチャル空間でゲームを楽しむキャラクターたち" fill sizes="(max-width:900px) 90vw, 560px" /><span>「一戦、一緒にやろ！」</span></div>
         <p className="usage-screen-note">招待が届いたら、そのまま参加<span>画面イメージ</span></p>
         <ol className="usage-steps">
           <li><span className="usage-step-number">1</span><GuideScreen kind="message" /><h4>招待リンクを開く</h4><p>友達から届いたリンクで、参加画面を開く。</p></li>

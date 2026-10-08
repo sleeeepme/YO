@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { inviteUrl, composerUrl, platforms, sharePlatform, shareActivity, shareUntil, invitationText, cardUrl } from '../lib/share.ts';
+import { inviteUrl, composerUrl, platforms, sharePlatform, shareActivity, shareGameTitle, shareUntil, invitationText, cardUrl } from '../lib/share.ts';
 import { encodeChat, decodeChat } from '../lib/voice/chat.ts';
 test('all share links retain invitation in fragment, including nested composer URLs', () => {
   const secret = 'a'.repeat(43);
@@ -30,6 +30,22 @@ test('Japanese sharing text, time and OGP use the same bounded public choices', 
   assert.equal(new URL(link).hash, '#secret');
   assert.equal(new URL(composerUrl('X', link, text)).searchParams.get('text'), text);
   assert.equal(new URL(cardUrl('X','game',until), 'https://yo.example').searchParams.get('until'), String(until));
+});
+test('game titles are bounded public text shared consistently only for gaming', () => {
+  const game = 'モンスターハンター ワイルズ & Mario Kart';
+  assert.equal(shareGameTitle('  マリオ\nカート  '), 'マリオ カート');
+  assert.equal(shareGameTitle(null), '');
+  assert.equal(Array.from(shareGameTitle('🎮'.repeat(41))).length, 40);
+  for (const platform of platforms) {
+    const link = new URL(inviteUrl('https://yo.example', 'yo-room', 'secret', platform, 'game', undefined, game));
+    assert.equal(link.searchParams.get('game'), game);
+    assert.equal(link.hash, '#secret');
+    assert.equal(new URL(cardUrl(platform, 'game', undefined, game), 'https://yo.example').searchParams.get('game'), game);
+    assert.ok(invitationText('game', undefined, game).includes(`「${game}」のゲーム仲間募集中！`));
+    assert.equal(new URL(inviteUrl('https://yo.example', 'yo-room', 'secret', platform, 'drink', undefined, game)).searchParams.get('game'), null);
+    assert.ok(!invitationText('talk', undefined, game).includes(game));
+  }
+  assert.equal(invitationText('game', undefined, ' '), invitationText('game'));
 });
 test('chat accepts Unicode/newlines as text and rejects malformed, oversized and spoofed packets', () => {
   const packet = { id: randomUUID(), body: 'こんばんは 👋\n<script>alert(1)</script>' };

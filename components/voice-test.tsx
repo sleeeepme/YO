@@ -110,7 +110,7 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
       await withDeadline(live.connect(result.serverUrl, result.token, { websocketTimeout: 10000, peerConnectionTimeout: 15000, maxRetries: 1 }), 30000, '音声通話に接続できませんでした。SafariまたはChromeで開き直すか、通信環境を変えてお試しください。');
       if (!mounted.current) { await live.disconnect(); return; }
       setConnection(result); setState('通話中'); update();
-      try { await live.startAudio(); setNotice('参加しました。話すときはマイクをONにしてください。'); } catch { setSound(false); soundRef.current = false; setNotice('音声を聞くには「音声を再生」を押してください。'); }
+      try { await withDeadline(live.startAudio(), 5000, '音声の再生待ち'); setNotice('参加しました。話すときはマイクをONにしてください。'); } catch { setSound(false); soundRef.current = false; setNotice('音声を聞くには「音声を再生」を押してください。'); }
       // Joining is silent. Microphone permission is requested only on an explicit tap.
     } catch (error) {
       room.current = null; setState('未接続'); setConnection(undefined);

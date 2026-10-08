@@ -1,5 +1,5 @@
 import { avatarId } from '@/lib/avatars';
-const extraAssets = ['mint-headphones', 'peach-beret', 'lavender-hoodie', 'sky-glasses', 'lemon-gamer', 'pink-coffee', 'tipsy', 'cyclops', 'zombie', 'exhausted'];
+const extraAssets = ['mint-headphones', 'peach-beret', 'lavender-hoodie', 'sky-glasses', 'lemon-gamer', 'pink-coffee', 'tipsy', 'cyclops', 'zombie', 'exhausted', 'cat', 'dog', 'frog'];
 export function Avatar({ seed = 0, className = '' }: { seed?: number; className?: string }) {
   const variant = avatarId(seed);
   const style = variant < 4 ? { backgroundPosition: `${variant * 100 / 3}% center` } : {

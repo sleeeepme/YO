@@ -2,7 +2,7 @@
 
 既存の0〜3番はpublic/avatars.webpを維持。4〜9番はbuilt-in image_genで6回生成。参照は既存のavatars.webp（スタイルのみ）。透明PNGのアルファを維持し、配信用に512×683のWebPへ変換。新素材の合計は約205KB。原本はCodex生成画像フォルダに保持。
 
-14種類のID・名前・検証はlib/avatars.tsで共通化。選択画面・参加API・LiveKit metadataの表示は同じIDを使用。選択中をチェックとaria-pressedで表し、接続中は選択不可。
+17種類のID・名前・検証はlib/avatars.tsで共通化。選択画面・参加API・LiveKit metadataの表示は同じIDを使用。選択中をチェックとaria-pressedで表し、接続中は選択不可。
 
 ## 生成プロンプト
 
@@ -69,3 +69,25 @@ Create one full-body YO app avatar in the same polished soft 3D vinyl plush toy 
 配信素材：../public/avatars/exhausted.webp
 
 Create one full-body YO app avatar in the same polished soft 3D vinyl plush toy style as the reference character. Replace the reference character with this new character: An unusually skinny elongated pale cream bean-shaped exhausted blob, visibly sunken cheeks, dark circles under droopy glossy black eyes, hunched shoulders, limp little arms, oversized blue cap, tiny weary mouth. Clearly gaunt but adorable. Rounded tiny limbs, soft pastel colors, smooth material, studio lighting. Entire character centered with generous transparent margins, consistent full-body framing. Transparent background, no floor, no shadow plane, no halo, no text, no other characters. Portrait 3:4.
+
+## 猫・犬・カエル追加
+
+14〜16番。built-in image_genで3回生成。pink-coffeeをスタイル参照に使用。透過PNGから512×683のWebPへ変換。原本は生成フォルダに保持。
+
+### cat（猫）
+
+配信素材：../public/avatars/cat.webp
+
+Use case: stylized-concept. Create ONE full-body animal avatar for YO voice chat. Reference is STYLE ONLY: match polished soft 3D vinyl plush, pastel rounded blob body, tiny stubby limbs, adorable smooth toy appearance. Subject: A peach cream cat mascot with triangular cat ears, whiskers, tiny pink nose, curved fluffy tail, large glossy black oval eyes, playful smile and one paw waving. Entire character centered, occupies 75 percent of portrait 3:4 image height with generous clear margins. Transparent background, no floor, no platform, no shadow plane, no text, no other characters. Soft studio lighting, clean silhouette. Make the animal instantly recognizable.
+
+### dog（犬）
+
+配信素材：../public/avatars/dog.webp
+
+Use case: stylized-concept. Create ONE full-body animal avatar for YO voice chat. Reference is STYLE ONLY: match polished soft 3D vinyl plush, pastel rounded blob body, tiny stubby limbs, adorable smooth toy appearance. Subject: A golden cream puppy mascot with floppy brown ears, little round muzzle and shiny black nose, tiny wagging tail, glossy black oval eyes, happy open mouth and stubby paws. Entire character centered, occupies 75 percent of portrait 3:4 image height with generous clear margins. Transparent background, no floor, no platform, no shadow plane, no text, no other characters. Soft studio lighting, clean silhouette. Make the animal instantly recognizable.
+
+### frog（カエル）
+
+配信素材：../public/avatars/frog.webp
+
+Use case: stylized-concept. Create ONE full-body animal avatar for YO voice chat. Reference is STYLE ONLY: match polished soft 3D vinyl plush, pastel rounded blob body, tiny stubby limbs, adorable smooth toy appearance. Subject: A mint green frog mascot with two big glossy black eyes on raised round eye bumps, wide cheerful smile, cream belly, tiny rounded webbed feet and waving rounded hands. Entire character centered, occupies 75 percent of portrait 3:4 image height with generous clear margins. Transparent background, no floor, no platform, no shadow plane, no text, no other characters. Soft studio lighting, clean silhouette. Make the animal instantly recognizable.

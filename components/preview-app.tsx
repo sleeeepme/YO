@@ -6,6 +6,7 @@ import { Avatar } from './avatar';
 import { Logo } from './logo';
 import { SocialIcon } from './socials';
 import { VoiceTest } from './voice-test';
+import { UsageGuide } from './usage-guide';
 import { rooms, moodLabels, type Mood, type Room } from '@/lib/rooms';
 
 type Step = 'choose' | 'avatar' | 'access';
@@ -23,6 +24,7 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
   const shareInput = useRef<HTMLInputElement>(null);
   const joinPanel = useRef<HTMLElement>(null);
   const roomPanel = useRef<HTMLElement>(null);
+  const previewDetails = useRef<HTMLDetailsElement>(null);
   const isSample = rooms.some(r => r.id === selected.id);
   const full = selected.count >= selected.capacity;
   useEffect(() => {
@@ -40,7 +42,7 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
     setNotice('');
   }, [selected]);
   function showModal(kind: typeof modal) { setModal(kind); dialog.current?.showModal(); }
-  function showStep(next: Step) { setStep(next); joinPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  function showStep(next: Step) { setStep(next); if (previewDetails.current) previewDetails.current.open = true; joinPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   function shuffle() {
     const next = (seed + 1 + Math.floor(Math.random() * 3)) % 4;
     setSeed(next);
@@ -70,7 +72,8 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
           <div className="social-path hero-socials">{socials.map(name => <div key={name}><SocialIcon name={name} /><span>{name}</span></div>)}</div>
         </div>
       </section>
-      <div className="home-details"><h2 className="usage-heading">YOの使い方</h2>
+      <div className="home-details"><UsageGuide onCreate={() => { setCreationVersion(value => value + 1); showModal('create'); }} />
+      <details className="usage-preview-details" ref={previewDetails}><summary>画面のイメージを見る</summary>
       <div className="experience-grid">
         <section className="invite-column" id="invitation"><div className="step-heading"><span>1</span><h2>リンクを開く</h2><small>ルームの雰囲気を、先に。</small></div>
           <div className="invite-phone"><div className="scene-cover"><div className="scene-shade" /><Logo /><div className="scene-spark" aria-hidden="true">✦</div></div><div className="invitation-details"><h3>{selected.title}<span aria-hidden="true">{selected.mood === 'drink' ? '🍺' : '✦'}</span></h3><div className="invite-avatar-row">{selected.names.slice(0, 3).map((name, i) => <div className="small-person" key={name}><Avatar seed={isSample ? i : seed} /></div>)}{selected.count > 3 ? <span className="more-people">+{selected.count - 3}</span> : null}</div><p className="occupancy">{selected.count}人で話しています <span>{selected.count} / {selected.capacity}{full ? ' FULL' : ''}</span></p><p className="remaining">{selected.minutes ? `あと${selected.minutes}分` : '制限時間は未設定'}<small>（プレビュー）</small></p><div className="friend-badge"><span>✓</span> Friends + Friends <small>友達とその友達</small></div><div className="named-people">{selected.names.slice(0, 3).map((name, i) => <div key={name}><span className="avatar-circle"><Avatar seed={isSample ? i : seed} /></span><span>{name}</span></div>)}{selected.count > 3 ? <div><span className="more-people">+{selected.count - 3}</span></div> : null}</div><button className="button primary" onClick={() => full ? showModal('create') : showStep('choose')}>{full ? '別のルームを作る' : '参加方法の画面を見る'} ↗</button><button className="detail-link" onClick={() => showModal('about')}>詳細を見る</button></div></div>
@@ -84,6 +87,7 @@ export function PreviewApp({ initialRoom }: { initialRoom?: Room }) {
       </div>
       <section className="sharing-section"><div><span className="section-label">INVITE YOUR FRIENDS</span><h2>いつものSNSから、同じルームへ。</h2><p>Instagram / X / Discord / LINE。リンクひとつで誘える体験に。</p></div>{isSample ? <div className="share-actions"><button className="button primary" onClick={copyInvite}>↗ 招待サンプルを共有</button><label>サンプル招待URL<input ref={shareInput} value={shareUrl} readOnly onFocus={e => e.currentTarget.select()} /></label></div> : <p className="local-note">ローカルプレビューは共有できません。</p>}</section>
 
+      </details>
       <p role="status" aria-live="polite" className="notice">{notice}</p><footer><Logo /><span>これから、ちょっと集まろ。</span><button onClick={() => showModal('about')}>公開プレビューについて</button></footer></div>
     </main>
     <dialog ref={dialog} className={`modal ${modal === 'create' ? 'create-modal' : ''}`} aria-labelledby={modal === 'create' ? 'room-dialog-title' : undefined}><button className="modal-close" aria-label="閉じる" onClick={() => dialog.current?.close()}>×</button>{modal === 'create' ? <><h2 id="room-dialog-title">{moodLabels[creationMood]}</h2><VoiceTest key={creationVersion} hero defaultTitle={rooms.find(room => room.mood === creationMood)?.title} /></> : modal === 'signup' ? <><div className="modal-avatars"><Avatar seed={0}/><Avatar seed={1}/></div><h2>次回もすぐ話せるように。</h2><p>会話のあとに登録して、友達とつながる。<br />通知を受け取ったり、アバターをカスタマイズしたり。</p><div className="provider-buttons">{socials.map(name=><div className="provider-preview" key={name}><SocialIcon name={name}/><span>{name}で続ける</span><small>準備中</small></div>)}</div><p className="form-note">ログイン・登録は未対応です。<br />この画面では個人情報を収集しません。</p><button className="detail-link" onClick={()=>dialog.current?.close()}>今はしない</button></> : <><Logo /><h2>これから、ちょっと集まろ。</h2><p>YOは、SNSのリンクから友達と集まれる、最大8人のボイスチャット。アバターで気軽に参加して、登録やカスタマイズはあとから。</p><div className="form-note">公開プレビュー v0.3<br />上部の気分ボタンから限定テスト用のルームを作成できます。下部のカードは架空のサンプルです。SNS認証・友達判定・承認は準備中。アバターはこのブラウザに保存します。</div><a className="text-button" href="https://github.com/sleeeepme/YO" target="_blank" rel="noreferrer">プロジェクトを見る ↗</a></> }</dialog>

@@ -6,8 +6,8 @@ SyntaxError: Non-UTF-8 code starting with '\xe3' in file <stdin> on line 2, but 
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_9gUNzCPpZ8Vj6WQCoAoUenBQiWAD
-- 配信したアプリのコミット: 5c5e6a781362322fcc4506d5184048bf61134fdb
+- デプロイID: dpl_EZFbqWmpChpxQ4VCeicRgwmnJswm
+- 配信したアプリのコミット: a1f04ee7b59cb9b8edec4617533af65b2fefdfab
 
 ## 利用できること
 
@@ -21,7 +21,7 @@ SyntaxError: Non-UTF-8 code starting with '\xe3' in file <stdin> on line 2, but 
 
 ## 検証結果
 
-- npm run test / npm run build（型検査含む）: 成功。10件の自動テスト。
+- npm run test / npm run build（型検査含む）: 成功。14件の自動テスト。
 - Cookie改ざん・期限・リンク形式、PGliteでSQL適用・8枠・重複参加・予約回収・終了・権限・レート制限を確認。PGliteは実Supabaseでの同時接続試験とは異なる。
 - 実環境でSupabase・LiveKitのready判定、ルーム作成201、参加トークン発行200、ホスト終了200を確認。
 - Codex内ブラウザではWebRTCのsetConfigurationに対応できず音声接続が失敗。開発側の複数実端末での相互音声、通常のChrome / Safariでの接続、8人の同時入室、webhook到達は未検証。ユーザーからはX経由の通話成功報告あり。
@@ -112,3 +112,13 @@ Mobile inputs/selects/textareas at 900px and below use 16px text to prevent iPho
 ## 2026-10-08 X用カードの左下ラベル削除
 
 X用のみ「最大8人・登録なし」のラベルを削除し、下部80pxをタイトル重ね表示用に確保。他SNSは従来のラベルを維持。X用画像URLにはv=2を付与。既存10テスト・型検査・本番ビルド成功、production READY。本番の1200×630px PNGをブラウザで表示し、ラベルなし・下部余白・日本語の描画を確認。Xへの実投稿は行っていない。
+
+
+## 2026-10-08 作成時の期限指定・通話画面の余白短縮
+
+- ルーム作成時に招待の有効期限を30分・1時間・2時間・3時間・6時間から選択。初期値は1時間。サーバーは許可した数値のみ受理し、旧クライアントの省略は1時間として扱う。
+- DBのexpires_atを共通期限として招待検証・参加・画面の終了タイマー・共有の終了予定に使用。有効期限になると招待とルームが終了することをフォームに明記。共有の時間選択も期限を超えない。サーバーによる時刻到達時の強制切断は別途未実装。
+- 通話中は参加前の説明を隠し、ヘッダー・メンバー・音声操作・退出・招待の余白を短縮。ルーム名と終了時刻をコンパクトに表示。参加前の名前入力16px・初期マイクOFFは維持。
+- 14件の自動テストと本番ビルド・型検査成功。Vercel production READY、本番ドメインへの割り当て確認。
+- 本番APIで30分・6時間・省略時1時間の作成201、期限の一致、招待検証200を確認。範囲外・文字列・nullの4種類は400。検証ルームはすべてホスト終了し、その後の招待410を確認。
+- 本番390×600pxの作成モーダルで5選択肢・6時間の選択・作成ボタンを確認。通話中レイアウトは実際のCSSと8人表示の静的検証画面を390×600pxで確認し、退出ボタン下端550.5px・横はみ出しなし。静的検証画面は削除済み。実機iPhone16eおよび8人同時の音声接続はこの変更で再検証していない。

@@ -1,0 +1,10 @@
+# YO hero artwork
+
+- Tool: built-in imagegen (2026-10-08).
+- Reference: public/friday-scene.webp, character design and rendering style only.
+- Final asset: public/hero-lounge-v1.webp, 1672 × 941, optimized WebP.
+- Existing invitation artwork remains in public/friday-scene.webp.
+
+## Final prompt
+
+Use case: stylized-concept. Asset type: a wide panoramic full-browser-width background artwork for the YO social voice-chat landing page, landscape 2048x1152. Input image 1 is a character design and rendering-style reference only, not an image to put into a collage. Create one continuous inviting cozy nighttime lounge scene with two recognizable activities: in the middle, the white marshmallow character with green knitted beanie and the pink-white character with backward purple cap and sunglasses cheerfully toast golden drinks at a small wood table; on the right, two matching chubby marshmallow characters (one yellow with a blue cap, one pink with purple headphones) sit on a soft couch holding clearly visible generic game controllers, laughing and playing a video game together with a TV glow. Maintain the reference's shiny vertical black oval eyes, little smiling mouth, tiny round hands and feet, soft high quality 3D toy rendering, knitted hat material. Composition: truly wide establishing shot, characters entire upper bodies and hands/controllers clearly readable, not extreme closeup. Leftmost 30 percent should be an atmospheric navy-indigo softly lit lounge wall/window with natural low-detail negative space for an HTML heading and form overlay. Place toasting characters around 50-65 percent and gaming characters 75-92 percent of canvas width. No divider or hard seam, a single shared room. Neon blue/purple city bokeh outside windows, warm amber pendant lamps near the toast, soft violet/blue light around the couch. Rich deep navy at edges, joyful modern/pop feeling; crisp subjects, cinematic gentle depth of field. Keep all character faces and both game controllers within central vertical 25-70 percent so background cropping works. No letters, no logo, no UI, no watermarks, no human people, no console brand or identifiable game characters.

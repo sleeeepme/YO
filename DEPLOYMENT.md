@@ -5,8 +5,8 @@
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_2GkHhXyD7ZeQrSBp1P2CzZaGre3V
-- 配信したアプリのコミット: d3747d775d15b9d140723377f1b8ce2d3bf0eff3
+- デプロイID: dpl_9gUNzCPpZ8Vj6WQCoAoUenBQiWAD
+- 配信したアプリのコミット: 5c5e6a781362322fcc4506d5184048bf61134fdb
 
 ## 利用できること
 
@@ -107,3 +107,7 @@ Mobile inputs/selects/textareas at 900px and below use 16px text to prevent iPho
 - 未参加のスマホ画面だけ、ヘッダー・見出し・アバター・フォームの余白を縮小。入力16px/高さ44px、参加ボタン高さ44pxを維持。接続後の通話レイアウトは維持。
 - 本番ビルドと型検査成功、production READY。本番の390×600pxで参加ボタン下端504px、360×600pxで下端489px・横はみ出しなし。ブラウザの操作バーを考慮した表示領域でスクロールなしに参加できることを確認。実機iPhone16eでの再検証は未実施。
 - ランダム変更の操作、1280pxで変更ボタンがアバター領域内に収まることを確認。文言/配置確認は架空IDで行い、実際の通話参加は行っていない。
+
+## 2026-10-08 X用カードの左下ラベル削除
+
+X用のみ「最大8人・登録なし」のラベルを削除し、下部80pxをタイトル重ね表示用に確保。他SNSは従来のラベルを維持。X用画像URLにはv=2を付与。既存10テスト・型検査・本番ビルド成功、production READY。本番の1200×630px PNGをブラウザで表示し、ラベルなし・下部余白・日本語の描画を確認。Xへの実投稿は行っていない。

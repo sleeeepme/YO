@@ -43,3 +43,6 @@
 /* Fade artwork and its tint into the page rather than ending at a hard edge. */
 .hero.intro{background:transparent}.hero-visual{-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 65%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 65%,transparent 100%)}.hero:after{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 100px),transparent 100%);mask-image:linear-gradient(to bottom,#000 calc(100% - 100px),transparent 100%)}
 @media(max-width:680px){.hero-visual{-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 48%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 48%,transparent 100%)}}
+
+.usage-heading{font-size:28px;font-weight:800;line-height:1.5;margin:0 0 28px;color:var(--text)}
+@media(max-width:680px){.usage-heading{font-size:24px;margin-bottom:24px}}

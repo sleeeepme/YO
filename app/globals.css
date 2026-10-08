@@ -73,3 +73,5 @@
 /* Keep page gestures to scrolling; form text below 16px triggers iPhone focus zoom. */
 html,body{touch-action:pan-x pan-y}
 @media(max-width:900px){input,select,textarea{font-size:16px!important}}
+
+.home-avatar-tool { max-width: 360px; margin: 24px auto; }

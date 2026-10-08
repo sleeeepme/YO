@@ -27,7 +27,7 @@ async function livekitCheck(): Promise<Check> {
   }
 }
 export async function GET() {
-  if (!configured()) return response({ ready: false, message: '通話テストは準備中です。' });
+  if (!configured()) return response({ ready: false, message: '現在、通話を利用できません。' });
   const [supabase, livekit] = await Promise.all([supabaseCheck(), livekitCheck()]);
   const ready = supabase === 'ready' && livekit === 'ready';
   return response({ ready, mode: 'invite-guest-test', checks: { supabase, livekit }, ...(ready ? {} : { message: supabase !== 'ready' ? 'Supabaseへの接続設定を確認中です。' : 'LiveKitへの接続設定を確認中です。' }) });

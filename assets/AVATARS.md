@@ -2,7 +2,7 @@
 
 既存の0〜3番はpublic/avatars.webpを維持。4〜9番はbuilt-in image_genで6回生成。参照は既存のavatars.webp（スタイルのみ）。透明PNGのアルファを維持し、配信用に512×683のWebPへ変換。新素材の合計は約205KB。原本はCodex生成画像フォルダに保持。
 
-17種類のID・名前・検証はlib/avatars.tsで共通化。選択画面・参加API・LiveKit metadataの表示は同じIDを使用。選択中をチェックとaria-pressedで表し、接続中は選択不可。
+20種類のID・名前・検証はlib/avatars.tsで共通化。選択画面・参加API・LiveKit metadataの表示は同じIDを使用。初回と変更はランダムのみ。変更時は現在のIDを除外し、接続中は変更不可。
 
 ## 生成プロンプト
 
@@ -91,3 +91,25 @@ Use case: stylized-concept. Create ONE full-body animal avatar for YO voice chat
 配信素材：../public/avatars/frog.webp
 
 Use case: stylized-concept. Create ONE full-body animal avatar for YO voice chat. Reference is STYLE ONLY: match polished soft 3D vinyl plush, pastel rounded blob body, tiny stubby limbs, adorable smooth toy appearance. Subject: A mint green frog mascot with two big glossy black eyes on raised round eye bumps, wide cheerful smile, cream belly, tiny rounded webbed feet and waving rounded hands. Entire character centered, occupies 75 percent of portrait 3:4 image height with generous clear margins. Transparent background, no floor, no platform, no shadow plane, no text, no other characters. Soft studio lighting, clean silhouette. Make the animal instantly recognizable.
+
+## 宇宙人・ロボ・ジェイソン追加／ランダム専用
+
+17〜19番。built-in image_genで3回生成。pink-coffeeをスタイル参照に使用。透過PNGから512×683のWebPへ変換。原本は生成フォルダに保持。選択一覧は廃止し、ランダム変更時は現在のIDを除外。
+
+### alien（宇宙人）
+
+配信素材：../public/avatars/alien.webp
+
+Use case: stylized-concept. Create ONE full-body YO voice-chat avatar. Reference is STYLE ONLY: polished soft 3D vinyl plush toy, rounded body, short limbs, pastel materials and adorable appearance. Subject: A mint-lime alien blob, oversized smooth oval head, two large glossy black almond-shaped eyes, small antennae, tiny smile, silver violet space suit collar and waving stubby arm. Entire character centered at 75 percent of portrait 3:4 image height with generous clear margins. Soft studio lighting. Transparent background, no floor, no shadow plane, no text, no other characters, clean silhouette.
+
+### robot（ロボ）
+
+配信素材：../public/avatars/robot.webp
+
+Use case: stylized-concept. Create ONE full-body YO voice-chat avatar. Reference is STYLE ONLY: polished soft 3D vinyl plush toy, rounded body, short limbs, pastel materials and adorable appearance. Subject: A cute rounded pastel silver and sky-blue robot, rounded rectangular head, two glowing turquoise eyes on a dark face panel, tiny antenna, rounded metal mitten hands and stubby feet, friendly digital smile. Entire character centered at 75 percent of portrait 3:4 image height with generous clear margins. Soft studio lighting. Transparent background, no floor, no shadow plane, no text, no other characters, clean silhouette.
+
+### jason（ジェイソン）
+
+配信素材：../public/avatars/jason.webp
+
+Use case: stylized-concept. Create ONE full-body YO voice-chat avatar. Reference is STYLE ONLY: polished soft 3D vinyl plush toy, rounded body, short limbs, pastel materials and adorable appearance. Subject: A cute chubby toy version of Jason Voorhees, wearing his recognizable off-white hockey mask with small breathing holes, black eye openings and red chevron markings, worn olive jacket, dark trousers, stubby rounded hands and feet. Friendly playful pose, no weapons, no blood, no gore. Entire character centered at 75 percent of portrait 3:4 image height with generous clear margins. Soft studio lighting. Transparent background, no floor, no shadow plane, no text, no other characters, clean silhouette.

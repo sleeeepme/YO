@@ -5,8 +5,8 @@
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_H7Hub9ingFZFj6gcDyLPJRst12fe
-- 配信したアプリのコミット: 36f2f0fefee90576097d23f09cf054bd5bba8aa8
+- デプロイID: dpl_Dn3ALKmG66oBwxoBDG4AtPMFdRr6
+- 配信したアプリのコミット: fd59c59ffe1606fb30fffe47deb179ada7b364af
 
 ## 利用できること
 
@@ -32,3 +32,5 @@ GitHub mainの上記コミットを指定してVercel APIから配信。後続�
 Vercelのアクセス保護設定は変更していない。公開ドメインは認証情報なしで閲覧・API確認済み。環境変数の保存後は新しいデプロイが必要。
 
 2026-10-08：新しい添付写真に合わせてOを非対称な輪郭へ調整。独立した透明背景SVGを /yo-logo.svg（黒）と /yo-logo-white.svg（白）で配布。共通形状からビルド時に同期し、公開SVGの表示とビルド成功を確認。
+
+2026-10-08：トップにキャラクターの背景ビジュアルを追加し、コピー直下にルーム作成フォームを配置。利用者向け表記を「ルーム」に統一。ビルド・型チェック成功。390pxのスマホ表示で横はみ出しがないこと、公開サイトの背景画像読み込み、作成フォームのready状態と未入力時の案内を確認。

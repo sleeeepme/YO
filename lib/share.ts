@@ -21,6 +21,7 @@ export function endTimeText(until?: number) {
 export function invitationText(activity: Activity, until?: number, gameTitle?: string) { const game = activity === 'game' ? shareGameTitle(gameTitle) : ''; return `${activities[activity].first}${activities[activity].second}${game ? `\n「${game}」のゲーム仲間募集中！` : ''}\n${endTimeText(until)}\nYOで一緒に話そう！`; }
 export function cardUrl(platform: Platform, activity: Activity, until?: number, gameTitle?: string) {
   const query = new URLSearchParams({ platform: platform.toLowerCase(), activity });
+  if (platform === 'X') query.set('v', '2');
   if (until) query.set('until', String(until));
   if (activity === 'game' && shareGameTitle(gameTitle)) query.set('game', shareGameTitle(gameTitle));
   return `/api/share/card?${query}`;

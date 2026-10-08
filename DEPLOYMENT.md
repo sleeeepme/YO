@@ -5,25 +5,25 @@
 - 環境: production / 状態: READY
 - バージョン: 0.3.0 / Next.js 16.4.0
 - Vercelプロジェクト: yo / prj_nwZ7YRgsjm74PGffYoRWpYdVkLRT
-- デプロイID: dpl_47R3VnqndTtTvyhja6qnw1GLFFd8
-- 配信したアプリのコミット: 7c3ff8d0488226d2a5c83cdefbb904abc0480368
+- デプロイID: dpl_91YinwxGpgnU9e3rYvrcioQAkzYB
+- 配信したアプリのコミット: ab5f055b07b4a1a98bc504ce7c4136bba5c5e948
 
 ## 利用できること
 
-招待ゲスト音声テストを有効化。Supabase・LiveKitの接続チェックが成功。ログイン・ホスト用コードなしでルームを作成し、招待の検証と2〜8人の参加枠確保を経て参加トークンを発行する。署名webhook、ミュート、退出、ホスト終了の実装あり。
+招待ゲスト音声を有効化。Supabase・LiveKitの接続チェックが成功。ログイン・ホスト用コードなしでルームを作成し、招待の検証と2〜8人の参加枠確保を経て参加トークンを発行する。署名webhook、ミュート、退出、ホスト終了の実装あり。
 
 作成フォームはルーム名の入力不足を作成ボタンの近くに表示。作成中表示、20秒の通信タイムアウト、連打防止、貼り付け時の前後空白除去を追加。作成結果が不明な場合は自動再送しない。
 
 ユーザー指定コンセプト画像の白いYOロゴを滑らかなベジェ曲線で描き直し、共通SVGの形状をヘッダー・カード・通話ページ・OGP・アイコンへ反映。濃紺・紫CTA・3Dキャラクターを維持。
 
-サンプル招待カード、気分からの作成ボタン、アバターShuffle、OGPも利用可能。デザインサンプルの人数・名前・時間は架空。SNSログイン、友達判定、承認、ブロックは未実装。
+気分からの作成ボタン、アバターShuffle、SNS共有、日本語OGPカード、チャット、ゲームタイトル入力も利用可能。旧来の架空の参加・通話・SNSログインサンプルは削除済み。SNSログイン、友達判定、承認、ブロックは未実装。
 
 ## 検証結果
 
-- npm run test / npm run build（型検査含む）: 成功。8件の自動テスト。
+- npm run test / npm run build（型検査含む）: 成功。10件の自動テスト。
 - Cookie改ざん・期限・リンク形式、PGliteでSQL適用・8枠・重複参加・予約回収・終了・権限・レート制限を確認。PGliteは実Supabaseでの同時接続試験とは異なる。
 - 実環境でSupabase・LiveKitのready判定、ルーム作成201、参加トークン発行200、ホスト終了200を確認。
-- Codex内ブラウザではWebRTCのsetConfigurationに対応できず音声接続が失敗。複数端末での相互音声、通常のChrome / Safariでの接続、8人の同時入室、webhook到達は未検証。
+- Codex内ブラウザではWebRTCのsetConfigurationに対応できず音声接続が失敗。開発側の複数実端末での相互音声、通常のChrome / Safariでの接続、8人の同時入室、webhook到達は未検証。ユーザーからはX経由の通話成功報告あり。
 - 受け入れ条件はVOICE_SETUP.mdを参照。参加トークン発行を相互通話成功として扱わない。
 
 ## 配信運用
@@ -90,3 +90,12 @@ Optional 40-character game title in the invite modal, shown only for gaming. Inc
 ## Mobile zoom settings (2026-10-08)
 
 Mobile inputs/selects/textareas at 900px and below use 16px text to prevent iPhone focus zoom. Global viewport: device-width, initial-scale=1, maximum-scale=1, user-scalable=no. html/body touch-action allows horizontal/vertical panning without pinch zoom. Production build passed; production READY. At 390px, name input computed size=16px, viewport values correct, touch-action=pan-x pan-y, visualViewport.scale=1 after focus and text input, no horizontal overflow. Actual iPhone Safari and OS accessibility overrides were not tested; browser-specific forced zoom may override page preferences.
+
+## 2026-10-08 公開表記の整理
+
+- ユーザーからX経由の通話テスト成功の報告。開発側による複数実端末の独立音声検証とは区別する。
+- 公開画面の「デザインプレビュー」「招待ゲスト通話テスト」「限定テスト」「公開プレビュー v0.3」を通常のサービス案内に変更。
+- 古い架空の参加・通話・SNSログインのデモとサンプル招待コピーを削除。イラスト付き使い方・ランダムアバター変更・本物のルーム作成を維持。
+- ログインなし・最大8人・1時間・招待リンク所持で参加という現在の実際の条件を案内する。未実装の友達判定を実装済みに見せない。
+- npm run build（型検査含む）と既存の10件の自動テストが成功。
+- Vercel production READY と本番ドメインへの割り当てを確認。390px幅でトップ・YOについて・アバター変更/保存・ルーム作成フォーム（利用可能）・招待先の参加フォームを確認。テスト/プレビュー版表記がないことを確認。招待先の文言確認には架空IDを使用し、通話参加や第三者への招待送信は行っていない。

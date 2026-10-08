@@ -1,3 +1,4 @@
+SyntaxError: Non-UTF-8 code starting with '\xe5' in file <stdin> on line 2, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details
 # YO 公開状況
 
 - 公開URL: https://yo-fawn-tau.vercel.app

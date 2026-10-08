@@ -75,3 +75,28 @@ html,body{touch-action:pan-x pan-y}
 @media(max-width:900px){input,select,textarea{font-size:16px!important}}
 
 .home-avatar-tool { max-width: 360px; margin: 24px auto; }
+
+/* Keep guest entry short enough for a phone's first view. */
+.call-entry .join-art.join-avatar-selection { height: 240px; gap: 4px; padding: 10px; }
+.call-entry .join-art.join-avatar-selection .avatar { width: 110px; }
+.avatar-random-button { flex-shrink: 0; min-height: 36px; padding: 6px 16px; border: 1px solid #c8b9e4; border-radius: 999px; background: #fff9; color: #503570; font-size: 11px; font-weight: 700; }
+.avatar-random-button:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 680px) {
+  .call-entry .site-header { padding: 12px 0; }
+  .call-entry .site-header .yo-logo { width: 54px; height: 32px; }
+  .call-entry .voice-test-layout { margin: 14px auto 20px; gap: 14px; }
+  .call-entry .voice-test-info .section-label { display: none; }
+  .call-entry .voice-test-info h2 { font-size: 20px; margin: 0 0 4px; }
+  .call-entry .voice-test-info p { font-size: 11px; line-height: 1.7; }
+  .call-entry .voice-test-info .voice-test-caution { margin-top: 4px; font-size: 10px; }
+  .call-entry .voice-test-info .notice:empty { display: none; }
+  .call-entry .join-art.join-avatar-selection { height: 180px; gap: 2px; padding: 8px; }
+  .call-entry .join-art.join-avatar-selection .avatar { width: 78px; }
+  .call-entry .join-avatar-caption { font-size: 11px; }
+  .call-entry .voice-test-form .white-card-body { padding: 12px 16px 14px; }
+  .call-entry .white-card-body h3 { margin-bottom: 6px; font-size: 16px; }
+  .call-entry .voice-test-form label { margin: 6px 0; font-size: 11px; }
+  .call-entry .voice-test-form input { margin-top: 4px; padding: 10px 12px; min-height: 44px; }
+  .call-entry .voice-test-form form > .button { margin-top: 10px; min-height: 44px; font-size: 14px; }
+  .call-entry .voice-test-form .card-fine-print { margin-top: 8px !important; font-size: 9px !important; }
+}

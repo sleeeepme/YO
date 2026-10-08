@@ -19,8 +19,8 @@ export async function GET(request: Request) {
   return new ImageResponse(<div style={{ display: 'flex', width: '100%', height: '100%', background: '#0b1025', color: 'white', position: 'relative', flexDirection: 'column', padding: story ? 72 : 48, fontFamily: 'YO Japanese' }}>
     {/* ImageResponse embeds local artwork without third-party fetches. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src={image} alt="" width={story ? 1080 : 760} height={story ? 1440 : 630} style={{ position: 'absolute', top: 0, right: 0, objectFit: 'cover', opacity: story ? 0.9 : 0.82 }} />
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: story ? 'linear-gradient(180deg,#0b102530 20%,#0b102500 48%,#0b1025 72%)' : 'linear-gradient(90deg,#0b1025 18%,#0b1025e8 35%,#0b102510 80%)', display: 'flex' }} />
+    <img src={image} alt="" width={story ? 1080 : platform === 'X' ? 1200 : 760} height={story ? 1440 : 630} style={{ position: 'absolute', top: 0, right: 0, objectFit: 'cover', opacity: story ? 0.9 : 0.82 }} />
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: story ? 'linear-gradient(180deg,#0b102530 20%,#0b102500 48%,#0b1025 72%)' : platform === 'X' ? 'linear-gradient(90deg,#0b1025 0%,#0b1025ed 28%,#0b1025b3 42%,#0b102530 58%,#0b102500 78%)' : 'linear-gradient(90deg,#0b1025 18%,#0b1025e8 35%,#0b102510 80%)', display: 'flex' }} />
     <div style={{ display: 'flex', position: 'relative', transform: story ? 'scale(2.2)' : 'scale(1.6)', transformOrigin: 'left top', color: 'white' }}><Logo /></div>
     <div style={{ display: 'flex', position: 'relative', flexDirection: 'column', marginTop: 'auto', paddingBottom: story ? 240 : platform === 'X' ? 80 : 0, gap: story ? 32 : gameTitle ? 10 : 18 }}>
       <div style={{ display: 'flex', color: accent, fontSize: story ? 32 : 22 }}>YOで一緒に話そう！</div>

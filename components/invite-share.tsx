@@ -60,10 +60,11 @@ export function InviteShare({ id, invite }: { id: string; invite: string }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img key={imageUrl} src={imageUrl} alt={`${platform}用のYO招待カード：${activities[activity].second} ${activity === 'game' ? shareGameTitle(gameTitle) : ''} ${endTimeText(until)}`} width={platform === 'Instagram' ? 1080 : 1200} height={platform === 'Instagram' ? 1920 : 630} />
     </div>
+    {platform === 'Instagram' ? <a className="button primary share-instagram-save" href={`${imageUrl}&download=1`} download="yo-instagram.png">画像を保存する <span aria-hidden="true">↓</span></a> : null}
     <p className="share-instruction">{platform === 'Instagram' ? 'カードを保存してストーリーズへ。リンクスタンプやDMに、コピーしたリンクを貼り付けてね。' : platform === 'Discord' ? '送りたいDMやチャンネルにリンクを貼り付けてね。カードは画像としても送れます。' : `${platform}を開いて、送りたい相手や投稿内容を選んでね。`}</p>
     <label className="share-link-label">招待リンク<input ref={input} readOnly value={url} onFocus={e => e.currentTarget.select()} /></label>
     <label className="share-link-label">共有する文章<textarea className="share-message" ref={messageInput} readOnly value={`${text}\n${url}`} rows={5} onFocus={e => e.currentTarget.select()} /></label>
-    <div className="invite-actions"><button type="button" className="button primary" disabled={expired} onClick={() => void copyMessage()}>文章＋リンクをコピー</button><button type="button" className="button light" disabled={expired} onClick={() => void copy()}>リンクだけコピー</button>{!expired ? <a className="button light" href={composerUrl(platform, url, text)} target="_blank" rel="noopener noreferrer">{platform}を開く ↗</a> : null}<a className="share-save" href={`${imageUrl}&download=1`} download={`yo-${platform.toLowerCase()}.png`}>カードを保存 ↓</a></div>
+    <div className="invite-actions"><button type="button" className="button primary" disabled={expired} onClick={() => void copyMessage()}>文章＋リンクをコピー</button><button type="button" className="button light" disabled={expired} onClick={() => void copy()}>リンクだけコピー</button>{!expired ? <a className="button light" href={composerUrl(platform, url, text)} target="_blank" rel="noopener noreferrer">{platform}を開く ↗</a> : null}{platform !== 'Instagram' ? <a className="share-save" href={`${imageUrl}&download=1`} download={`yo-${platform.toLowerCase()}.png`}>カードを保存 ↓</a> : null}</div>
     <p className="share-status" role="status">{notice || (manual ? 'リンクは「コピー」してから貼り付けてください。' : 'リンクのプレビューはSNS側の設定・キャッシュで変わる場合があります。')}</p>
     <p className="share-private">招待は作成から1時間。参加してほしい人だけに送ってください。</p>
   </section>;

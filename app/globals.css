@@ -100,3 +100,6 @@ html,body{touch-action:pan-x pan-y}
   .call-entry .voice-test-form form > .button { margin-top: 10px; min-height: 44px; font-size: 14px; }
   .call-entry .voice-test-form .card-fine-print { margin-top: 8px !important; font-size: 9px !important; }
 }
+
+.share-instagram-save { width: 100%; min-height: 56px; margin: 18px 0 14px; padding: 16px 24px; border-radius: 999px; font-size: 16px; font-weight: 700; background: linear-gradient(115deg,#be56ff,#8e31ff 48%,#5938f8); border: 1px solid #da91ff77; box-shadow: 0 5px 20px #9939ff44; }
+.share-instagram-save span { font-size: 24px; line-height: 1; }

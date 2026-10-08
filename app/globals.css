@@ -157,3 +157,38 @@ html,body{touch-action:pan-x pan-y}
 .call-active .voice-controls button[aria-pressed="true"] { background: #43315f; border-color: #9c75d8; }
 .call-active .voice-controls button:hover { background: #51406b; }
 .call-active .hangup { width: 92px; height: 44px; }
+
+/* Gentle, short motion without delaying voice or form actions. */
+@keyframes yo-reveal { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+@keyframes yo-pop { from { opacity: 0; scale: .96; } to { opacity: 1; scale: 1; } }
+@keyframes yo-float { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+@keyframes yo-speaking { 0%,100% { scale: 1; } 50% { scale: 1.04; } }
+@keyframes yo-backdrop { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-content { animation: yo-reveal 500ms ease-out both; }
+  .mood-choice { animation: yo-reveal 400ms ease-out both; }
+  .mood-choice:nth-child(2) { animation-delay: 60ms; }
+  .mood-choice:nth-child(3) { animation-delay: 120ms; }
+  .mood-character { animation: yo-float 4s ease-in-out 3; }
+  .mood-choice:nth-child(2) .mood-character { animation-delay: 500ms; }
+  .mood-choice:nth-child(3) .mood-character { animation-delay: 1s; }
+  button, .button { transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease, translate 180ms ease, scale 120ms ease; }
+  button:not(:disabled):active, .button:active { scale: .97; }
+  input, textarea, select { transition: border-color 180ms ease, box-shadow 180ms ease; }
+  .modal[open], .invite-modal-backdrop .invite-share-dialog { animation: yo-pop 220ms ease-out both; }
+  .modal[open]::backdrop, .invite-modal-backdrop { animation: yo-backdrop 180ms ease-out both; }
+  .join-avatar-selection > .avatar { animation: yo-pop 250ms ease-out both; }
+  .voice-members > div { animation: yo-reveal 220ms ease-out both; }
+  .voice-avatar { transition: border-color 180ms ease, box-shadow 180ms ease; }
+  .voice-avatar.speaking { animation: yo-speaking 900ms ease-in-out infinite; }
+  .chat-message { animation: yo-reveal 180ms ease-out both; }
+  .share-card-preview img { animation: yo-reveal 220ms ease-out both; }
+  .notice:not(:empty), .form-status:not(:empty), .chat-error:not(:empty) { animation: yo-reveal 180ms ease-out both; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .button:hover, .voice-share-trigger:hover, .avatar-random-button:hover, .call-active .voice-controls > button:hover { translate: 0 -2px; }
+  .mood-choice:hover .mood-character { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

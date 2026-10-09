@@ -1,0 +1,18 @@
+name: YO production health
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check voice and database availability
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --retry 2 --retry-delay 10 --max-time 30 \
+            https://yo-fawn-tau.vercel.app/api/health -o health.json
+          node -e "const s=JSON.parse(require('fs').readFileSync('health.json','utf8')); if(s.status!=='ok'||s.features.voice!==true||s.voiceTest.ready!==true) process.exit(1)"

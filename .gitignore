@@ -5,3 +5,6 @@ node_modules/
 !.env.example
 *.tsbuildinfo
 .DS_Store
+
+.workflow-data/
+app/.well-known/workflow/

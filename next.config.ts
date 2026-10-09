@@ -1,3 +1,4 @@
+import { withWorkflow } from 'workflow/next';
 import type { NextConfig } from 'next';
 const config: NextConfig = {
   async headers() {
@@ -9,4 +10,4 @@ const config: NextConfig = {
     ] }];
   },
 };
-export default config;
+export default withWorkflow(config);

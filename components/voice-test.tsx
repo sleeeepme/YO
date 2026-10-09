@@ -150,11 +150,11 @@ export function VoiceTest({ id, hero = false, defaultTitle = '' }: { id?: string
   async function leave(close = false) {
     if (!id || busy) return; setBusy(true);
     try {
-      if (close) await api('close', { id });
+      const result = close ? await api('close', { id }) : undefined;
       const live = room.current; room.current = null; disposeNotifications(); await live?.disconnect(); audio.current?.replaceChildren();
       setConnection(undefined); setMembers([]); setMic(false); setState('退出しました');
       if (!close) await api('leave', { id });
-      setNotice(close ? 'ルームを終了しました。' : '退出しました。');
+      setNotice(close ? (result?.pending ? '新しい参加を停止しました。全員の切断を処理しています。' : 'ルームを終了しました。') : '退出しました。');
     } catch (error) { setNotice(error instanceof Error ? error.message : '退出処理を確認できませんでした。'); }
     finally { setBusy(false); }
   }

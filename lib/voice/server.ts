@@ -36,8 +36,8 @@ export async function rate(key: string, limit: number) {
   if (error) throw new VoiceError('通話テストの設定を確認中です。', 503);
   if (!data) throw new VoiceError('操作が集中しています。1分ほど待ってください。', 429);
 }
-export async function getRoom(id: string, allowExpired = false) {
+export async function getRoom(id: string, allowExpired = false, allowClosed = false) {
   const { data, error } = await services().db.from('yo_voice_rooms').select('*').eq('id', id).single();
-  if (error || !data || data.closed || (!allowExpired && Date.parse(data.expires_at) <= Date.now())) throw new VoiceError('この招待は終了したか、有効期限が切れています。', 410);
+  if (error || !data || (!allowClosed && data.closed) || (!allowExpired && Date.parse(data.expires_at) <= Date.now())) throw new VoiceError('この招待は終了したか、有効期限が切れています。', 410);
   return data as { id: string; title: string; capacity: number; invite_hash: string; host_id: string; expires_at: string; closed: boolean };
 }
